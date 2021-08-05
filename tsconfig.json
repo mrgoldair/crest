@@ -6,13 +6,11 @@
     "lib": [
       "es2020", "DOM"
     ],
-    "module": "ES2020", // (A)
-    "moduleResolution": "Node", // (B)
+    "module": "es2020",
+    "moduleResolution": "Node",
     "strict": true,
     "sourceMap": true,
-    // Needed for CommonJS modules
-    "allowSyntheticDefaultImports": true, // (C)
-    //
+    "allowSyntheticDefaultImports": true,
     "declaration": true,
   }
 }
