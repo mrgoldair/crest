@@ -1,10 +1,30 @@
 import { TokenType } from "./TokenType";
 import { Token } from './Token';
 
-type BinaryExpr = {
-  left: Expr,
-  operator: Token,
-  right: Expr
+interface ExprVisitor<T> {
+  visitBinaryExpr(expr:BinaryExpr):T
+  visitUnaryExpr(expr:UnaryExpr):T
+}
+
+abstract class Expr {
+  abstract accept(visitor:ExprVisitor<object>):object
+}
+
+class BinaryExpr extends Expr {
+  left: Expr;
+  operator: Token;
+  right: Expr;
+
+  constructor(left:Expr, operator:Token, right:Expr){
+    super();
+    this.left = left;
+    this.operator = operator;
+    this.right = right;
+  }
+
+  accept(visitor:ExprVisitor<object>):object {
+    return {};
+  }
 }
 
 type UnaryExpr = {
@@ -20,8 +40,6 @@ type OpExpr = {
 type LiteralExpr = {
   value: number;
 }
-
-type Expr = UnaryExpr | BinaryExpr | OpExpr | LiteralExpr;
 
 export class Parser {
   tokens:Array<Token>;
@@ -127,30 +145,26 @@ export class Parser {
 
     if( this.match(TokenType.MINUS) ){
       operator = this.previous();
-    };
-
-    switch(this.peek().type){
-      case TokenType.COS:
-        right = this.op();
-        break;
-      case TokenType.NUMBER:
-        right = this.primary();
-        break;
+      right = this.primary();
+      return {
+        operator,
+        right
+      }
     }
 
-    return (operator ? { operator,right } : { right });
+    return this.primary()
   }
-
-  op():Expr {
-    return { fn:this.peek(),right:this.term() }
-  }
+  
+  // op():Expr {
+  //   return { fn:this.peek(),right:this.term() }
+  // }
 
   /**
    * primary -> number
    */
   primary():Expr {
-    if ( token.type != TokenType.NUMBER )
-      console.log("number");
-    return { value:token.literal };
+    return {
+      value: this.peek().literal
+    }
   }
 }
