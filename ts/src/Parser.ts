@@ -1,44 +1,10 @@
-import { TokenType } from "./TokenType";
-import { Token } from './Token';
+import { TokenType } from "./TokenType.js";
+import { Token } from './Token.js';
+import { Expr, BinaryExpr, UnaryExpr, LiteralExpr } from "./Expression.js";
+import { Crest } from "./Crest.js";
 
-interface ExprVisitor<T> {
-  visitBinaryExpr(expr:BinaryExpr):T
-  visitUnaryExpr(expr:UnaryExpr):T
-}
+class ParseError {
 
-abstract class Expr {
-  abstract accept(visitor:ExprVisitor<object>):object
-}
-
-class BinaryExpr extends Expr {
-  left: Expr;
-  operator: Token;
-  right: Expr;
-
-  constructor(left:Expr, operator:Token, right:Expr){
-    super();
-    this.left = left;
-    this.operator = operator;
-    this.right = right;
-  }
-
-  accept(visitor:ExprVisitor<object>):object {
-    return {};
-  }
-}
-
-type UnaryExpr = {
-  operator?: Token,
-  right: Expr
-}
-
-type OpExpr = {
-  fn: Token,
-  right: Expr
-}
-
-type LiteralExpr = {
-  value: number;
 }
 
 export class Parser {
@@ -49,14 +15,12 @@ export class Parser {
     this.tokens = tokens;
   }
 
-  parse(): Expr {
+  parse():Expr | null {
     try {
       return this.term();
-    } catch (error) {
-      
+    } catch (error:any) {
+      return null;
     }
-
-    return { value:1 };
   }
 
   //--------------------------------------
@@ -100,6 +64,11 @@ export class Parser {
     return this.tokens[this.current - 1];
   }
 
+  error(token:Token,message:string):ParseError {
+    Crest.error(token.line,message);
+    return new ParseError();
+  }
+
   //--------------------------------------
   //--- The actual expression grammar  ---
   //--------------------------------------
@@ -114,9 +83,7 @@ export class Parser {
     while( this.match(TokenType.PLUS,TokenType.MINUS) ){
       let operator = this.previous();
       let right = this.term();
-      expression = { left:expression,
-                     operator,
-                     right };
+      expression = new BinaryExpr(expression,operator,right);
     }
 
     return expression;
@@ -128,9 +95,7 @@ export class Parser {
     while( this.match(TokenType.STAR,TokenType.SLASH) ){
       let operator = this.previous();
       let right = this.term();
-      expression = { left:expression,
-                     operator,
-                     right };
+      expression = new BinaryExpr(expression,operator,right);
     }
 
     return expression;
@@ -146,25 +111,19 @@ export class Parser {
     if( this.match(TokenType.MINUS) ){
       operator = this.previous();
       right = this.primary();
-      return {
-        operator,
-        right
-      }
+      return new UnaryExpr(operator,right);
     }
 
-    return this.primary()
+    return this.primary();
   }
-  
-  // op():Expr {
-  //   return { fn:this.peek(),right:this.term() }
-  // }
 
   /**
    * primary -> number
    */
   primary():Expr {
-    return {
-      value: this.peek().literal
-    }
+    if( this.match(TokenType.NUMBER) )
+      return new LiteralExpr(this.previous().literal);
+
+    throw this.error(this.peek(), "Expected expression.")
   }
 }
