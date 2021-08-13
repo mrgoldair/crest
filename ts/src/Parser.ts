@@ -1,6 +1,6 @@
 import { TokenType } from "./TokenType.js";
 import { Token } from './Token.js';
-import { Expr, BinaryExpr, UnaryExpr, LiteralExpr } from "./Expression.js";
+import { Expr, BinaryExpr, UnaryExpr, LiteralExpr, GroupExpr } from "./Expression.js";
 import { Crest } from "./Crest.js";
 
 class ParseError {
@@ -17,8 +17,9 @@ export class Parser {
 
   parse():Expr | null {
     try {
-      return this.term();
+      return this.expression();
     } catch (error:any) {
+      this.synchronise();
       return null;
     }
   }
@@ -42,6 +43,13 @@ export class Parser {
     return false;
   }
 
+  consume(type:TokenType, message:string):Token {
+    if (this.check(type))
+      return this.advance();
+    
+    throw this.error(this.peek(), message);
+  }
+
   check(type:TokenType):boolean {
     return type == this.peek().type;
   }
@@ -54,24 +62,58 @@ export class Parser {
     return this.peek().type == TokenType.EOF;
   }
 
+  /**
+   * Increments `current` while returning the previous (current - 1) token
+   * @returns 
+   */
   advance():Token {
+    //   v----  return
+    //  [a] [b]
+    //   ----^  increment
     if ( !this.end )
       this.current++
     return this.previous();
   }
 
+  /**
+   * @returns {Token} - The token just processed at [current - 1]
+   */
   previous():Token {
     return this.tokens[this.current - 1];
   }
 
-  error(token:Token,message:string):ParseError {
-    Crest.error(token.line,message);
+  /**
+   * @param {Token} token 
+   * @param {string} message 
+   * @returns {ParseError}
+   */
+  error(token:Token, message:string):ParseError {
+    Crest.error( token, message );
     return new ParseError();
+  }
+
+  synchronise():void {
+    this.advance()
+
+    while ( !this.end ){
+      if ( this.previous().type == TokenType.SEMICOLON )
+        return;
+      
+      this.advance();
+    }
   }
 
   //--------------------------------------
   //--- The actual expression grammar  ---
   //--------------------------------------
+
+  /**
+   * 
+   * @returns {Expr} - the root of our grammar
+   */
+  expression():Expr {
+    return this.term();
+  }
 
   /**
    * 
@@ -118,11 +160,17 @@ export class Parser {
   }
 
   /**
-   * primary -> number
+   * 
+   * @returns {Expr} - a terminal from our grammar
    */
   primary():Expr {
-    if( this.match(TokenType.NUMBER) )
-      return new LiteralExpr(this.previous().literal);
+    if( this.match(TokenType.NUMBER) ) {
+      return new LiteralExpr(this.previous().literal)
+    } else if ( this.match(TokenType.LEFT_PAREN) ){
+      let expr = this.expression();
+      this.consume(TokenType.RIGHT_PAREN, "Expecting ')' after expression.");
+      return new GroupExpr(expr);
+    }
 
     throw this.error(this.peek(), "Expected expression.")
   }

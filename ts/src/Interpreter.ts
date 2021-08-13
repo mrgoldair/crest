@@ -1,4 +1,4 @@
-import { Expr, BinaryExpr, UnaryExpr, LiteralExpr, ExprVisitor } from './Expression.js';
+import { Expr, ExprVisitor, LiteralExpr, UnaryExpr, BinaryExpr, GroupExpr } from './Expression.js';
 import { TokenType } from './TokenType.js';
 
 class Interpreter implements ExprVisitor<Object> {
@@ -33,5 +33,9 @@ class Interpreter implements ExprVisitor<Object> {
       default:
         return (left.accept(this) as number) / (right.accept(this) as number);
     }
+  }
+
+  visitGroupExpr(group:GroupExpr):Object {
+    return this.evaluate(group.expr);
   }
 }

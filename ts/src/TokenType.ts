@@ -4,9 +4,10 @@ export enum TokenType {
   MINUS,
   SLASH,
   STAR,
-  LEFT_BRACKET,
-  RIGHT_BRACKET,
+  LEFT_PAREN,
+  RIGHT_PAREN,
   COS,
   X,
-  EOF
+  EOF,
+  SEMICOLON
 }

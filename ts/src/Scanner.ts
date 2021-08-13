@@ -33,8 +33,8 @@ export class Scanner {
       case '-': this.addToken(TokenType.MINUS); break;
       case '+': this.addToken(TokenType.PLUS); break;
       case '*': this.addToken(TokenType.STAR); break;
-      case '(': this.addToken(TokenType.LEFT_BRACKET); break;
-      case '(': this.addToken(TokenType.RIGHT_BRACKET); break;
+      case '(': this.addToken(TokenType.LEFT_PAREN); break;
+      case ')': this.addToken(TokenType.RIGHT_PAREN); break;
       case ' ':
       case '\r':
       case '\t':
@@ -51,7 +51,7 @@ export class Scanner {
           this.number();
           break;
         } else {
-          Crest.error(this.line, `Unexpected character ${c}`);
+          Crest.errorLine(this.line, `Unexpected character ${c}`);
           break;
         }
     }
@@ -100,7 +100,7 @@ export class Scanner {
     if ( tokenType ) {
       this.addToken(tokenType)
     } else {
-      Crest.error(this.line, `Unexpected keyword ${text}`);
+      Crest.errorLine(this.line, `Unexpected keyword ${text}`);
     }
   }
 

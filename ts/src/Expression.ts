@@ -4,6 +4,7 @@ export interface ExprVisitor<T> {
   visitBinaryExpr(expr:BinaryExpr):T
   visitUnaryExpr(expr:UnaryExpr):T
   visitLiteralExpr(expr:LiteralExpr):T
+  visitGroupExpr(expr:GroupExpr):T
 }
 
 abstract class Expr {
@@ -55,9 +56,23 @@ class LiteralExpr extends Expr {
   }
 }
 
+class GroupExpr extends Expr {
+  expr:Expr;
+
+  constructor(expr:Expr){
+    super();
+    this.expr = expr;
+  }
+
+  accept(visitor:ExprVisitor<object>){
+    return visitor.visitGroupExpr(this);
+  }
+}
+
 export {
   Expr,
   BinaryExpr,
   UnaryExpr,
-  LiteralExpr
+  LiteralExpr,
+  GroupExpr
 }

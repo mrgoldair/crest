@@ -1,8 +1,8 @@
 import { Token } from './Token.js';
 import { Scanner } from './Scanner.js';
 import { Parser } from './Parser.js';
-import { Expr } from './Expression.js';
 import { ASTPrinter } from './ASTPrinter.js';
+import { TokenType } from './TokenType.js';
 
 export class Crest {
   static tokens:Array<Token>;
@@ -12,20 +12,29 @@ export class Crest {
     let scanner = new Scanner(source);
     let tokens = scanner.scanTokens();
     let parser = new Parser(tokens);
-    let printer = new ASTPrinter();
+    let expr = parser.parse();
 
-    let expr:Expr | null = parser.parse();
+    if (this.hadError)
+      return;
 
     if( expr )
-      console.log( printer.print(expr) );
+      console.log( new ASTPrinter().print(expr) );
   }
 
-  static error(line:number, message:string):void {
+  static errorLine(line:number, message:string):void {
     Crest.report(line, "", message);
   }
 
   static report(line:number, where:string, message:string):void {
     console.error( `[line ${line}] Error ${where} : ${message}` );
     this.hadError = true;
+  }
+
+  static error(token:Token, message:string){
+    if (token.type == TokenType.EOF){
+      this.report( token.line, " at end", message );
+    } else {
+      this.report( token.line, " at '" + token.lexeme + "'", message );
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Expr, BinaryExpr, ExprVisitor, LiteralExpr, UnaryExpr } from "./Expression.js";
+import { Expr, BinaryExpr, ExprVisitor, LiteralExpr, UnaryExpr, GroupExpr } from "./Expression.js";
 
 export class ASTPrinter implements ExprVisitor<Object> {
 
@@ -21,5 +21,9 @@ export class ASTPrinter implements ExprVisitor<Object> {
   visitBinaryExpr(expr:BinaryExpr):Object {
     let { left, operator, right } = expr;
     return `${this.evaluate(left).toString()} ${operator.lexeme} ${this.evaluate(right).toString()}`;
+  }
+
+  visitGroupExpr(group:GroupExpr):Object {
+    return `(${this.evaluate(group.expr)})`;
   }
 }
