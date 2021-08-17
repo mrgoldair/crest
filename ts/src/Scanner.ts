@@ -34,6 +34,7 @@ export class Scanner {
       case '-': this.addToken(TokenType.MINUS); break;
       case '+': this.addToken(TokenType.PLUS); break;
       case '*': this.addToken(TokenType.STAR); break;
+      case '/': this.addToken(TokenType.SLASH); break;
       case '(': this.addToken(TokenType.LEFT_PAREN); break;
       case ')': this.addToken(TokenType.RIGHT_PAREN); break;
       case ',': this.addToken(TokenType.COMMA); break;
