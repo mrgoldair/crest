@@ -14,6 +14,7 @@ export class Scanner {
   constructor(source:string) {
     this.source = source;
     this.keywords.set( 'cos', TokenType.COS );
+    this.keywords.set( 'sin', TokenType.SIN );
     this.keywords.set( 'x',   TokenType.X );
   }
 
@@ -35,6 +36,7 @@ export class Scanner {
       case '*': this.addToken(TokenType.STAR); break;
       case '(': this.addToken(TokenType.LEFT_PAREN); break;
       case ')': this.addToken(TokenType.RIGHT_PAREN); break;
+      case ',': this.addToken(TokenType.COMMA); break;
       case ' ':
       case '\r':
       case '\t':
@@ -94,11 +96,13 @@ export class Scanner {
     while( this.isAlpha(this.peek()) ){
       this.advance();
     }
-    
+
     let text = this.source.substring(this.start, this.current);
     let tokenType = this.keywords.get(text)
+
+    // At the mo all we have is keywords, no identifiers
     if ( tokenType ) {
-      this.addToken(tokenType)
+      this.addToken(tokenType);
     } else {
       Crest.errorLine(this.line, `Unexpected keyword ${text}`);
     }

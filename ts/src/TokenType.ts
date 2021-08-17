@@ -7,7 +7,9 @@ export enum TokenType {
   LEFT_PAREN,
   RIGHT_PAREN,
   COS,
+  SIN,
   X,
   EOF,
-  SEMICOLON
+  SEMICOLON,
+  COMMA
 }

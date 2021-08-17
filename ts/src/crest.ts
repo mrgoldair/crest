@@ -2,6 +2,8 @@ import { Token } from './Token.js';
 import { Scanner } from './Scanner.js';
 import { Parser } from './Parser.js';
 import { ASTPrinter } from './ASTPrinter.js';
+import { Compiler } from './Compiler.js';
+import { Interpreter } from './Interpreter.js';
 import { TokenType } from './TokenType.js';
 
 export class Crest {
@@ -18,7 +20,7 @@ export class Crest {
       return;
 
     if( expr )
-      console.log( new ASTPrinter().print(expr) );
+      console.log( new Interpreter().evaluate(expr) );
   }
 
   static errorLine(line:number, message:string):void {

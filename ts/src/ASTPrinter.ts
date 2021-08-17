@@ -1,4 +1,4 @@
-import { Expr, BinaryExpr, ExprVisitor, LiteralExpr, UnaryExpr, GroupExpr } from "./Expression.js";
+import { Expr, BinaryExpr, ExprVisitor, LiteralExpr, UnaryExpr, GroupExpr, CallExpr, VariableExpr } from "./Expression.js";
 
 export class ASTPrinter implements ExprVisitor<Object> {
 
@@ -25,5 +25,14 @@ export class ASTPrinter implements ExprVisitor<Object> {
 
   visitGroupExpr(group:GroupExpr):Object {
     return `(${this.evaluate(group.expr)})`;
+  }
+
+  visitCallExpr(expr:CallExpr):Object {
+    let args = expr.args.map(arg => this.evaluate(arg))
+    return `${this.evaluate(expr.callee)}(${args.join(",")})`;
+  }
+
+  visitVariableExpr(expr:VariableExpr):Object {
+    return expr.name.lexeme;
   }
 }

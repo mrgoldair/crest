@@ -5,6 +5,8 @@ export interface ExprVisitor<T> {
   visitUnaryExpr(expr:UnaryExpr):T
   visitLiteralExpr(expr:LiteralExpr):T
   visitGroupExpr(expr:GroupExpr):T
+  visitCallExpr(expr:CallExpr):T
+  visitVariableExpr(expr:VariableExpr):T
 }
 
 abstract class Expr {
@@ -69,10 +71,42 @@ class GroupExpr extends Expr {
   }
 }
 
+class CallExpr extends Expr {
+  callee:Expr;
+  args:Array<Expr>;
+  paren:Token;
+
+  constructor(callee:Expr, paren:Token,args:Array<Expr>){
+    super()
+    this.callee = callee;
+    this.args = args;
+    this.paren = paren;
+  }
+
+  accept(visitor:ExprVisitor<object>){
+    return visitor.visitCallExpr(this);
+  }
+}
+
+class VariableExpr extends Expr {
+  name:Token;
+
+  constructor(name:Token){
+    super();
+    this.name = name;
+  }
+
+  accept(visitor:ExprVisitor<object>){
+    return visitor.visitVariableExpr(this);
+  }
+}
+
 export {
   Expr,
   BinaryExpr,
   UnaryExpr,
   LiteralExpr,
-  GroupExpr
+  GroupExpr,
+  CallExpr,
+  VariableExpr
 }

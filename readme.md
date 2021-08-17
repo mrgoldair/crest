@@ -15,3 +15,16 @@ But these are not enough to construct a grammar in which operator precedence hol
 In reading the grammar from the list of tokens from the lexer we need a way to maintain this relationship of completing multiplication and division before addition and subtraction. But once we're parsing the tokens within that grammar we don't need to store them in such a specifc structure as "Addition", instead we can store all such binary operations using a `BinaryExpr` class which encodes the specifc operator as a token e.g. `+`,`*`,`-` or `/`.
 
 Distinction between literals, lexemes and values.
+
+statement - statements are what we have left after expressions. If expressions are for "computing" a value, statements are a way to enact change without returning a value. e.g. print statements or var declaration statements. Both use expressions for their value but neither would "return" that value in the same sense as an expression.
+
+expression statement - exist to evaluate expressions that have side effects;
+
+Variable declaration - "brings a new variable into the world"
+Variable expression - when an identifier is used as an expression, the name is looked-up and the bound value returned
+
+expression - value
+
+            |-- expression statement
+statement --|
+            |-- print statement

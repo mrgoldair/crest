@@ -1,6 +1,6 @@
 import { TokenType } from "./TokenType.js";
 import { Token } from './Token.js';
-import { Expr, BinaryExpr, UnaryExpr, LiteralExpr, GroupExpr } from "./Expression.js";
+import { Expr, BinaryExpr, UnaryExpr, LiteralExpr, GroupExpr, CallExpr, VariableExpr } from "./Expression.js";
 import { Crest } from "./Crest.js";
 
 class ParseError {
@@ -33,7 +33,7 @@ export class Parser {
    * @param tokenTypes 
    * @returns 
    */
-  match(...tokenTypes:Array<TokenType>): boolean {
+  match(...tokenTypes:Array<TokenType>):boolean {
     for(const type of tokenTypes){
       if( this.check(type) ){
         this.advance();
@@ -156,7 +156,40 @@ export class Parser {
       return new UnaryExpr(operator,right);
     }
 
-    return this.primary();
+    return this.call();
+  }
+
+  /**
+   * Function calls
+   */
+  call():Expr {
+    // This will either be a number or the identifier
+    // for a function call - identified by following parenthesis
+    let expr = this.primary();
+
+    while (true) {
+      if( this.match(TokenType.LEFT_PAREN) ){
+        expr = this.arguments(expr);
+      } else {
+        break;
+      }
+    }
+
+    return expr;
+  }
+
+  arguments(callee:Expr):Expr {
+    let args:Array<Expr> = [];
+
+    if ( !this.check(TokenType.RIGHT_PAREN) ){
+      do {
+        args.push( this.expression() );
+      } while( this.match(TokenType.COMMA) )
+    }
+  
+    let paren:Token = this.consume(TokenType.RIGHT_PAREN, "Expecting ')' after arguments.");
+
+    return new CallExpr(callee, paren, args);
   }
 
   /**
@@ -165,11 +198,15 @@ export class Parser {
    */
   primary():Expr {
     if( this.match(TokenType.NUMBER) ) {
-      return new LiteralExpr(this.previous().literal)
+      return new LiteralExpr( this.previous().literal );
+
     } else if ( this.match(TokenType.LEFT_PAREN) ){
       let expr = this.expression();
       this.consume(TokenType.RIGHT_PAREN, "Expecting ')' after expression.");
       return new GroupExpr(expr);
+
+    } else if ( this.match(TokenType.COS, TokenType.SIN) ){
+      return new VariableExpr( this.previous() );
     }
 
     throw this.error(this.peek(), "Expected expression.")
