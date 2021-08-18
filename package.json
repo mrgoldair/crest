@@ -3,17 +3,20 @@
   "version": "0.1.0",
   "type": "module",
   "description": "DSL for toying with wave functions",
-  "main": "dist/src/cli.js",
+  "main": "out/cli.js",
   "exports": {
-    "./*": "./dist/src/*.js"
+    "./*": "./out/*.js"
   },
   "typesVersions": {
     "*": {
-      "*": ["dist/src/*"]
+      "*": [
+        "out/*"
+      ]
     }
   },
   "scripts": {
-    "start": "dist/src/cli.js",
+    "build": "tsc",
+    "run": "node out/cli.js .test",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -24,6 +27,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^16.4.10"
+    "@types/node": "^16.6.1"
   }
 }

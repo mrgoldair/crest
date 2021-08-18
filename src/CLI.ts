@@ -18,7 +18,7 @@ class CrestCLI {
   }
 
   static runFile(file:string){
-    fs.readFile( file, 'UTF-8', (err,data) => {
+    fs.readFile( file, { encoding:"utf-8" }, (err,data) => {
       if (err) {
         console.error(err);
         process.exit(1);

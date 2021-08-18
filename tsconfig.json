@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "rootDir": "ts",
-    "outDir": "dist",
+    "rootDir": "src",
+    "outDir": "out",
     "target": "es2020",
     "lib": [
       "es2020", "DOM"
