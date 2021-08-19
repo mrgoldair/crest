@@ -1,5 +1,5 @@
 {
-  "name": "crest",
+  "name": "crest-compiler",
   "version": "0.1.0",
   "type": "module",
   "description": "DSL for toying with wave functions",
