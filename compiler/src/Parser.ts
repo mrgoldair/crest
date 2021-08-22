@@ -205,7 +205,7 @@ export class Parser {
       this.consume(TokenType.RIGHT_PAREN, "Expecting ')' after expression.");
       return new GroupExpr(expr);
 
-    } else if ( this.match(TokenType.COS, TokenType.SIN) ){
+    } else if ( this.match(TokenType.COS, TokenType.SIN, TokenType.X) ){
       return new VariableExpr( this.previous() );
     }
 

@@ -19,7 +19,8 @@ export class Interpreter implements ExprVisitor<Object> {
 
         return Math.cos(a);
       }
-    })
+    });
+    this.globals.define("x", new Number(0))
   }
 
   evaluate(expr:Expr):Object {
