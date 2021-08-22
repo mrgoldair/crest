@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
+import Crest from 'crest-compiler';
 
 const Canvas = (props) => {
   let canvasRef = useRef(null);

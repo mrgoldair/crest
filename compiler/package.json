@@ -5,13 +5,11 @@
   "description": "DSL for toying with wave functions",
   "main": "out/cli.js",
   "exports": {
-    "./*": "./out/*.js"
+    ".": "./out/Crest.js"
   },
   "typesVersions": {
     "*": {
-      "*": [
-        "out/*"
-      ]
+      "Crest.d.ts": ["out/Crest.d.ts"]
     }
   },
   "scripts": {
