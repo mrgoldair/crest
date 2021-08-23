@@ -160,11 +160,12 @@ export class Parser {
   }
 
   /**
-   * Function calls
+   * `Call` delineates beween primary expressions and function calls.
+   * If a primary e.g. NUMBER or IDENTIFIER (or in our case KEYWORD because
+   * we don't allow user defined data) is follow by parenthesis, we denote a function call
+   * @returns {Expr} - The expression or function call
    */
   call():Expr {
-    // This will either be a number or the identifier
-    // for a function call - identified by following parenthesis
     let expr = this.primary();
 
     while (true) {
@@ -178,6 +179,18 @@ export class Parser {
     return expr;
   }
 
+  /**
+   * A helper function to assemble the remainder of a function call
+   * after a LEFT_PAREN token has been encountered.
+   * 
+   * @param callee - The variable expression we're calling. This ultimately
+   * translates to a CrestCallable which defines our interface for calling
+   * something. In our case all callees are globally defined functions, inserted
+   * into the top-level environment as CrestCallables as their own token types
+   * COS, SIN, X etc. If/when Crest supports user defined elements they will be
+   * represented as the IDENTIFIER token type.
+   * @returns {CallExpr} - An expression representing a function call.
+   */
   arguments(callee:Expr):Expr {
     let args:Array<Expr> = [];
 

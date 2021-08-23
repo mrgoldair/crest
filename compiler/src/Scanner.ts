@@ -103,7 +103,7 @@ export class Scanner {
 
     // At the mo all we have is keywords, no identifiers
     if ( tokenType ) {
-      this.addToken(tokenType);
+      this.addToken(tokenType, text);
     } else {
       Crest.errorLine(this.line, `Unexpected keyword ${text}`);
     }

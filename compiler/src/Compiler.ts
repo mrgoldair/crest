@@ -29,9 +29,7 @@ export class Compiler implements ExprVisitor<string> {
 
   compile(expr:Expr):string {
     return `
-      function run(x){
-        return ${ this.evaluate(expr) }
-      }
+      return ${ this.evaluate(expr) };
     `;
   }
 
@@ -40,9 +38,10 @@ export class Compiler implements ExprVisitor<string> {
   }
 
   visitCallExpr(expr:CallExpr):string {
-    let callee = expr.callee as VariableExpr;
+    let callee = this.evaluate(expr.callee);
+    let args = expr.args.map(arg => this.evaluate(arg));
 
-    return "";
+    return `${callee}(${args.join(',')})`;
   }
 
   visitBinaryExpr(expr:BinaryExpr):string {

@@ -20,7 +20,7 @@ export class Crest {
       return;
 
     if( expr )
-      console.log( new Interpreter().evaluate(expr) );
+      console.log( new Compiler().compile(expr) );
   }
 
   static errorLine(line:number, message:string):void {

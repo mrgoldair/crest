@@ -76,7 +76,7 @@ class CallExpr extends Expr {
   args:Array<Expr>;
   paren:Token;
 
-  constructor(callee:Expr, paren:Token,args:Array<Expr>){
+  constructor(callee:Expr, paren:Token, args:Array<Expr>){
     super()
     this.callee = callee;
     this.args = args;
