@@ -1,6 +1,11 @@
 # CREST
 ### A DSL for writing waves
 
+## TODO
+- Scroll the waves right to left
+- Layer multiple waves
+- Give UI controls for speed n such
+
 ## Lexing & Tokens
 Converts the string of a source file it into the tokens of our DSL. This is our "lexical grammer" – what arrangement of characters create allowable tokens. `cos`, `sin` and `tan`.
 
@@ -32,3 +37,6 @@ For example, an expression as simple as `x = 5` becomes a statement expression w
 
 There is the **variable declaration** statement. This introduces a binding between an expression and an identifier. Then flip side of that is the **variable expression** statement - when an identifier is used as an expression, the name is looked-up and the bound value returned.
 
+## Compiling to JS
+
+What's the best way?

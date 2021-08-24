@@ -20916,25 +20916,28 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       canvas.style.height = height + "px";
       canvas.width = width = width * 2;
       canvas.height = height = height * 2;
+      ctx.clearRect(0, 0, width, height);
       ctx.beginPath();
-      ctx.moveTo(0, height / 2);
-      ctx.lineTo(width, height / 2);
+      ctx.moveTo(0, height / 3);
+      ctx.lineTo(width, height / 3);
       ctx.closePath();
       ctx.stroke();
-      if (draw)
-        for (let x = 0; x < width; x++) {
+      if (draw) {
+        for (let x = 0; x < width; x = x + 10) {
           let y = draw(x);
-          ctx.arc(x, y, 0, 6.28);
+          ctx.beginPath();
+          ctx.arc(x, y * 20, 2, 0, 6.28);
+          ctx.stroke();
         }
-    }, [canvasRef]);
+      }
+    }, [canvasRef, draw]);
     return /* @__PURE__ */ import_react.default.createElement("canvas", {
       ref: canvasRef
     });
   };
   var App = () => {
     let [input, setInput] = (0, import_react.useState)("");
-    let [fn, setFn] = (0, import_react.useState)(() => {
-    });
+    let [fn, setFn] = (0, import_react.useState)(() => (x) => 1);
     const handleInputChange = (e) => {
       let el = e.target;
       setInput(el.value);
@@ -20944,10 +20947,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       try {
         let fn2 = Function("x", `return ${js};`);
         console.log("fn: %s", fn2(0));
+        setFn(() => fn2);
       } catch (error) {
         console.error(error);
       }
-      setFn(() => fn);
     };
     return /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement(Canvas, {
       draw: fn,

@@ -5,6 +5,7 @@ import { Crest } from 'crest-compiler';
 const Canvas = (props) => {
   let canvasRef = useRef(null);
   let { width, height, draw } = props;
+  let circleRadians = Math.PI * 2;
 
   useEffect(() => {
     let canvas = canvasRef.current;
@@ -15,44 +16,50 @@ const Canvas = (props) => {
     canvas.width = width = width * 2;
     canvas.height = height = height * 2;
 
-    ctx.beginPath();
-    ctx.moveTo(0,height/2);
-    ctx.lineTo(width,height/2);
-    ctx.closePath();
-    ctx.stroke();
+    ctx.clearRect(0, 0, width, height);
 
-    if( draw )
-      for (let x = 0; x < width; x++) {
-        let y = draw(x)
-        ctx.arc(x,y,0,6.28);
+    let radiansPerPx = circleRadians / width;
+
+    ctx.strokeStyle = "hsla(0,0%,0%,.2)";
+    for (let x = 0; x < width; x = x + 10) {
+      for (let y = 0; y < height; y = y + 10) {
+        ctx.beginPath();
+        ctx.arc(x, y, 1, 0, 6.28);
+        ctx.stroke();
       }
+    }
 
-  },[canvasRef]);
+    ctx.strokeStyle = "hsla(0,0%,0%,.4)";
+    for (let x = 0; x < width; x = x + 10) {
+      let y = draw(x * radiansPerPx);
+      ctx.beginPath();
+      ctx.arc(x, (height/2) + y, 1, 0, 6.28);
+      ctx.stroke();
+    }
+
+  },[canvasRef, draw]);
 
   return <canvas ref={canvasRef}/>
 }
 
 const App = () => {
-  let [ input, setInput ] = useState("");
-  let [ fn, setFn ] = useState(() => {});
+  let [ input, setInput ] = useState("cos(x * 6) * 10");
+  let [ fn, setFn ] = useState(() => x => 1);
 
   const handleInputChange = (e) => {
     let el = e.target;
     setInput( el.value );
-    //console.log(input);
-    // parse
+
     let js = Crest.compile( el.value );
-    // create fn
-    //console.log("js: %s", js);
+
     if( typeof js !== "string" ) return;
 
     try {
       let fn = Function("x", `return ${js};`)
-      console.log("fn: %s", fn(0));
+      setFn(() => fn);
     } catch (error) {
       console.error(error);
     }
-    setFn(() => fn);
   }
 
   return (

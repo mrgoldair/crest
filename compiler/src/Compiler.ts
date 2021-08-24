@@ -15,7 +15,7 @@ export class Compiler implements ExprVisitor<object> {
       }
 
       call(interpreter:Interpreter,[x]:Array<Object>):Object {
-        return Math.cos(x as number);
+        return `Math.cos(${x})`;
       }
     });
     this.globals.define("x", new String("x"));
