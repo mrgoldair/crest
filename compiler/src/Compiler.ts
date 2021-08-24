@@ -3,7 +3,7 @@ import { Interpreter } from './Interpreter.js';
 import { CrestCallable } from './CrestCallable.js';
 import { Expr, BinaryExpr, ExprVisitor, GroupExpr, LiteralExpr, UnaryExpr, CallExpr, VariableExpr } from './Expression';
 
-export class Compiler implements ExprVisitor<string> {
+export class Compiler implements ExprVisitor<object> {
   
   globals:Environment;
 
@@ -14,49 +14,44 @@ export class Compiler implements ExprVisitor<string> {
         return 1;
       }
 
-      call(interpreter:Interpreter,args:Array<Object>):Object {
-        let a = args[0] as number;
-
-        return Math.cos(a);
+      call(interpreter:Interpreter,[x]:Array<Object>):Object {
+        return Math.cos(x as number);
       }
     });
     this.globals.define("x", new String("x"));
   }
 
-  evaluate(expr:Expr):Object {
+  compile(expr:Expr):object {
     return expr.accept(this);
   }
 
-  compile(expr:Expr):string {
-    return `
-      return ${ this.evaluate(expr) };
-    `;
+  visitVariableExpr(expr:VariableExpr):object {
+    return this.globals.get(expr.name);
   }
 
-  visitVariableExpr(expr:VariableExpr):string {
-    return expr.name.literal;
+  visitCallExpr({callee,args}:CallExpr):object {
+    let callable = this.compile(callee) as CrestCallable
+
+    if( args.length != callable.arity() ){
+      throw new Error(`Expected ${callable.arity()} arguments but got ${args.length}.`);
+    }
+
+    return `Math.${(<VariableExpr>callee).name.lexeme}(${args.map(arg => this.compile(arg)).join(', ')})` as Object;
   }
 
-  visitCallExpr(expr:CallExpr):string {
-    let callee = this.evaluate(expr.callee);
-    let args = expr.args.map(arg => this.evaluate(arg));
-
-    return `${callee}(${args.join(',')})`;
+  visitBinaryExpr(expr:BinaryExpr):object {
+    return `${this.compile(expr.left)} ${expr.operator.lexeme} ${this.compile(expr.right)}` as Object;
   }
 
-  visitBinaryExpr(expr:BinaryExpr):string {
-    return `${expr.left} ${expr.operator} ${expr.right}`;
+  visitGroupExpr(expr:GroupExpr):object {
+    return `(${this.compile(expr.expr)})` as Object;
   }
 
-  visitGroupExpr(expr:GroupExpr):string {
-    return `(${expr.expr})`;
+  visitLiteralExpr(expr:LiteralExpr):object {
+    return expr.value.toString() as Object;
   }
 
-  visitLiteralExpr(expr:LiteralExpr):string {
-    return expr.value.toString();
-  }
-
-  visitUnaryExpr(expr:UnaryExpr):string {
-    return `${expr.operator}${expr.right}`;
+  visitUnaryExpr(expr:UnaryExpr):object {
+    return `${expr.operator}${this.compile(expr.right)}` as Object;
   }
 }

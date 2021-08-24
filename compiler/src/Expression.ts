@@ -46,7 +46,7 @@ class UnaryExpr extends Expr {
 }
 
 class LiteralExpr extends Expr {
-  value: object;
+  value:object;
 
   constructor(value:object){
     super();

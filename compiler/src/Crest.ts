@@ -10,7 +10,7 @@ export class Crest {
   static tokens:Array<Token>;
   static hadError:boolean = false;
 
-  static run(source:string){
+  static run(source:string):string | undefined {
     let scanner = new Scanner(source);
     let tokens = scanner.scanTokens();
     let parser = new Parser(tokens);
@@ -21,6 +21,26 @@ export class Crest {
 
     if( expr )
       console.log( new Compiler().compile(expr) );
+  }
+
+  static compile(source:string){
+    let scanner = new Scanner(source);
+    let tokens = scanner.scanTokens();
+    let parser = new Parser(tokens);
+    let expr = parser.parse();
+
+    if (this.hadError){
+      this.hadError = false;
+      return;
+    }
+
+    if( expr ){
+      try {
+        return new Compiler().compile(expr);
+      } catch (error) {
+        Crest.errorLine(1, error);
+      }
+    }
   }
 
   static errorLine(line:number, message:string):void {
@@ -34,9 +54,9 @@ export class Crest {
 
   static error(token:Token, message:string){
     if (token.type == TokenType.EOF){
-      this.report( token.line, " at end", message );
+      this.report( token.line, "at end", message );
     } else {
-      this.report( token.line, " at '" + token.lexeme + "'", message );
+      this.report( token.line, "at '" + token.lexeme + "'", message );
     }
   }
 }
