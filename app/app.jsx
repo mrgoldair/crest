@@ -20,6 +20,7 @@ const Canvas = (props) => {
 
     let radiansPerPx = circleRadians / width;
 
+    // Peg board background
     ctx.strokeStyle = "hsla(0,0%,0%,.2)";
     for (let x = 0; x < width; x = x + 10) {
       for (let y = 0; y < height; y = y + 10) {
@@ -46,11 +47,11 @@ const App = () => {
   let [ input, setInput ] = useState("cos(x * 6) * 10");
   let [ fn, setFn ] = useState(() => x => 1);
 
-  const handleInputChange = (e) => {
-    let el = e.target;
-    setInput( el.value );
+  const handleInputChange = ({target}) => {
 
-    let js = Crest.compile( el.value );
+    setInput( target.value );
+
+    let js = Crest.compile( target.value );
 
     if( typeof js !== "string" ) return;
 
