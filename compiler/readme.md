@@ -5,6 +5,7 @@
 - Scroll the waves right to left
 - Layer multiple waves
 - Give UI controls for speed n such
+- Debounce expression input
 
 ## Lexing & Tokens
 Converts the string of a source file it into the tokens of our DSL. This is our "lexical grammer" – what arrangement of characters create allowable tokens. `cos`, `sin` and `tan`.

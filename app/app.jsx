@@ -5,7 +5,32 @@ import { Crest } from 'crest-compiler';
 const Canvas = (props) => {
   let canvasRef = useRef(null);
   let { width, height, draw } = props;
-  let circleRadians = Math.PI * 2;
+  let circleRadians = Math.PI * 4;
+  let radiansPerPx = circleRadians / width;
+
+  // Peg board background
+  const plotBackground = ctx => {
+    ctx.strokeStyle = "hsla(0,0%,0%,.2)";
+    for (let x = 0; x < width; x = x + 10) {
+      for (let y = 0; y < height; y = y + 10) {
+        ctx.beginPath();
+        ctx.arc(x, y, 1, 0, 6.28);
+        ctx.stroke();
+      }
+    }
+  }
+
+  const plotCurve = (ctx,offset = 0) => {
+    ctx.strokeStyle = "hsla(0,0%,0%,.4)";
+    for (let x = 0; x <= width; x = x + 10) {
+      // draw is really yFn
+      ctx.beginPath();
+      let y = draw((x + (offset * 10)) * radiansPerPx);
+      ctx.arc(x, (height/2) + y, 1, 0, 6.28);
+      ctx.stroke();
+    }
+    return offset;
+  }
 
   useEffect(() => {
     let canvas = canvasRef.current;
@@ -16,35 +41,37 @@ const Canvas = (props) => {
     canvas.width = width = width * 2;
     canvas.height = height = height * 2;
 
-    ctx.clearRect(0, 0, width, height);
-
-    let radiansPerPx = circleRadians / width;
-
-    // Peg board background
-    ctx.strokeStyle = "hsla(0,0%,0%,.2)";
-    for (let x = 0; x < width; x = x + 10) {
-      for (let y = 0; y < height; y = y + 10) {
-        ctx.beginPath();
-        ctx.arc(x, y, 1, 0, 6.28);
-        ctx.stroke();
+    // Beginning time
+    let elapsed = 0;
+    // Seconds per frame
+    let spf = 30;
+    let offset = -1;
+    let frameId = 0;
+    const render = (timestamp) => {
+      // Have we crossed the threshold?
+      if((timestamp - elapsed) > spf){
+        // Reset our counter
+        elapsed = timestamp;
+        ctx.clearRect(0, 0, width, height);
+        // Draw!
+        plotBackground(ctx);
+        offset = plotCurve(ctx,offset + 1);
       }
+
+      frameId = requestAnimationFrame(render);
     }
 
-    ctx.strokeStyle = "hsla(0,0%,0%,.4)";
-    for (let x = 0; x < width; x = x + 10) {
-      let y = draw(x * radiansPerPx);
-      ctx.beginPath();
-      ctx.arc(x, (height/2) + y, 1, 0, 6.28);
-      ctx.stroke();
-    }
+    render();
 
-  },[canvasRef, draw]);
+    return () => cancelAnimationFrame(frameId)
+
+  },[draw]);
 
   return <canvas ref={canvasRef}/>
 }
 
 const App = () => {
-  let [ input, setInput ] = useState("cos(x * 6) * 10");
+  let [ input, setInput ] = useState("cos(x/3) * 15");
   let [ fn, setFn ] = useState(() => x => 1);
 
   const handleInputChange = ({target}) => {
@@ -64,10 +91,11 @@ const App = () => {
   }
 
   return (
-  <div>
-    <Canvas draw={fn} width={300} height={150} />
-    <input type="text" value={input} onChange={handleInputChange} />
-  </div>);
+    <div>
+      <Canvas draw={fn} width={300} height={150} />
+      <input type="text" value={input} onChange={handleInputChange} />
+    </div>
+  );
 }
 
 render(<App/>, document.getElementById('root'));
