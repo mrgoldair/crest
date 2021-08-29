@@ -2,10 +2,12 @@
 ### A DSL for writing waves
 
 ## TODO
-- Scroll the waves right to left
+- ~~Scroll the waves right to left~~
 - Layer multiple waves
+  - By composing functions `{Int -> Int . Int -> Int}`
 - Give UI controls for speed n such
 - Debounce expression input
+- Start the wave in the middle, flowing left like a sparkline
 
 ## Lexing & Tokens
 Converts the string of a source file it into the tokens of our DSL. This is our "lexical grammer" – what arrangement of characters create allowable tokens. `cos`, `sin` and `tan`.

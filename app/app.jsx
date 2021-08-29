@@ -43,13 +43,14 @@ const Canvas = (props) => {
 
     // Beginning time
     let elapsed = 0;
-    // Seconds per frame
-    let spf = 30;
+    // Milliseconds per frame
+    let ms = 16;
     let offset = -1;
-    let frameId = 0;
+    let frameId;
     const render = (timestamp) => {
+      frameId = requestAnimationFrame(render);
       // Have we crossed the threshold?
-      if((timestamp - elapsed) > spf){
+      if ((timestamp - elapsed) > ms) {
         // Reset our counter
         elapsed = timestamp;
         ctx.clearRect(0, 0, width, height);
@@ -57,10 +58,8 @@ const Canvas = (props) => {
         plotBackground(ctx);
         offset = plotCurve(ctx,offset + 1);
       }
-
-      frameId = requestAnimationFrame(render);
     }
-
+    // Start our render loop
     render();
 
     return () => cancelAnimationFrame(frameId)
@@ -75,15 +74,18 @@ const App = () => {
   let [ fn, setFn ] = useState(() => x => 1);
 
   const handleInputChange = ({target}) => {
-
+    // Controlled input, so set our input text value
     setInput( target.value );
-
-    let js = Crest.compile( target.value );
-
-    if( typeof js !== "string" ) return;
+    // Compile our text expression to js
+    let expression = Crest.compile( target.value );
+    // A successfully compiled expression will be a string.
+    // An expression such as "cos" returns a class object which we need to filter out;
+    if( typeof expression !== "string" ) return;
 
     try {
-      let fn = Function("x", `return ${js};`)
+      // Use our compiled expression to create a js function :: Int -> Int
+      let fn = Function("x", `return ${expression};`);
+      // Update our piece of state holding the function with this new function
       setFn(() => fn);
     } catch (error) {
       console.error(error);
