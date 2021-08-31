@@ -5,6 +5,10 @@
 - ~~Scroll the waves right to left~~
 - Layer multiple waves
   - By composing functions `{Int -> Int . Int -> Int}`
+  - Each successive pair can be combined via an operation e.g. addition, subtraction or even min/max
+  - Where should the responsabilities lay? Should `Canvas` know about expressions? Should the expressions know how they're being rendered? If each expression constitutes a curve i.e. there's no accumulation function between curve expressions, since the canvas is rendering curves should it know about this technicality?
+  - Maybe the structure should be a map instead of an array and the ordering explicit instead of implicitly defined by the array?
+  - If the _______ is for rendering curve functions should it know about "the innards" of them?
 - Give UI controls for speed n such
 - Debounce expression input
 - Start the wave in the middle, flowing left like a sparkline
