@@ -7,7 +7,12 @@ import Plot from './Plot.js'
 let service = new Service(compiler);
 
 /**
- * App is our composition root
+ * UI for expressions input
+*/
+const Expression = () => {}
+
+/**
+ * Composition root
  */
 const App = () => {
   // The source expression strings for our wave(s)
@@ -25,9 +30,9 @@ const App = () => {
   useEffect(() => {
     let fns = [];
     for(const prop in expressions){
-      fns.push(service.compile(expressions[prop].source));
+      fns.push(expressions[prop].source)
     }
-    setExprFns(fns);
+    setExprFns(service._compile(fns));
   }, [expressions])
   
   let inputs = [];

@@ -1,5 +1,20 @@
 import React, { useRef, useEffect } from 'react';
 
+// Exported to users of Plot to adhere to
+// plot is the type of function that Plot expects
+// to be able to render from; it accepts a number (denoted as `x`)
+// and returns an array of numbers which correspond to the evaluation
+// of all functions at that point. The internals of plot may be something 
+// like a reduction over a group of whatever functions. But we don't care
+// we just know the `x` value and want to plot the relative `y` values.
+type PlotFn = (x:number) => number[];
+
+export interface Plot {
+  plot:PlotFn
+  width:number,
+  height:number,
+}
+
 /**
  * Should Canvas plot curves knowingly as in `plotCurve` which 
  * knows to traverse the x-dim and call a func to generate a y value?
@@ -7,11 +22,10 @@ import React, { useRef, useEffect } from 'react';
  * with a context?
  * @param props
  */
-const Plot = (props) => {
+const Plot = (props:Plot) => {
   let canvasRef = useRef(null);
   let { width, height, expressions } = props;
-  let circleRadians = Math.PI * 4;
-  let radiansPerPx = circleRadians / width;
+  let radiansPerPx = (Math.PI * 4) / width;
 
   // Peg board background
   const plotBackground = ctx => {
