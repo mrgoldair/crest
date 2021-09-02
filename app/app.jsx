@@ -16,6 +16,7 @@ const Expression = () => {}
  */
 const App = () => {
   // The source expression strings for our wave(s)
+  // type Desc = { [index:number]:{}}
   let [ expressions, setExpressions ] = useState({1:{source:"1 + 1"},3:{source:"12"}});
   let [ exprFns, setExprFns ] = useState([]);
 

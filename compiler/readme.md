@@ -9,6 +9,8 @@
   - Where should the responsabilities lay? Should `Canvas` know about expressions? Should the expressions know how they're being rendered? If each expression constitutes a curve i.e. there's no accumulation function between curve expressions, since the canvas is rendering curves should it know about this technicality?
   - Maybe the structure should be a map instead of an array and the ordering explicit instead of implicitly defined by the array?
   - If the _______ is for rendering curve functions should it know about "the innards" of them?
+  - Invert dependencies – Core exposes and implements interface that UI depends upon
+    - This will expose the use case for compiling expression strings and returning the expression function `x -> [x]`
 - Give UI controls for speed n such
 - Debounce expression input
 - Start the wave in the middle, flowing left like a sparkline
