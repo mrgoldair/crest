@@ -9,8 +9,19 @@
   - Where should the responsabilities lay? Should `Canvas` know about expressions? Should the expressions know how they're being rendered? If each expression constitutes a curve i.e. there's no accumulation function between curve expressions, since the canvas is rendering curves should it know about this technicality?
   - Maybe the structure should be a map instead of an array and the ordering explicit instead of implicitly defined by the array?
   - If the _______ is for rendering curve functions should it know about "the innards" of them?
-  - Invert dependencies – Core exposes and implements interface that UI depends upon
-    - This will expose the use case for compiling expression strings and returning the expression function `x -> [x]`
+  - Invert dependencies
+    - **`Application`** 
+      - exposes the primary port (used-by) and becomes the adapter
+      - exposes the secondary (driven) port which is used by **`Application`**
+    - **`Compiler`** is the adapter of the secondary port exposed by **`Application`**
+    - **`UI(React)`** uses **`Application`** via the port/interface (primary/driven) **`Application`** exposes
+
+> **Incoming ports** will be the interface(s) that your application **implements**. **Outgoing ports** are the interfaces that your application **depends on**. "Incoming" and "outgoing" are the terms that our team adopted. "Driving port" and "driven port" is the terminology you may find in other literature.
+>
+> That leaves us with adapters. Just like ports, there are two kinds of adapters: incoming, which are represented in blue; and outgoing, which are represented in purple. The distinction here is incoming adapters **depend on the incoming port**, and outgoing adapters **implement the outgoing port**.
+>
+> [A color-coded guide to ports and adapters]: https://8thlight.com/blog/damon-kelley/2021/05/18/a-color-coded-guide-to-ports-and-adapters.html
+
 - Give UI controls for speed n such
 - Debounce expression input
 - Start the wave in the middle, flowing left like a sparkline
