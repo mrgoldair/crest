@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "./node_modules/.bin/esbuild app.jsx --bundle --define:process.env.NODE_ENV=\\\"development\\\" --servedir=. --outfile=dist/app.js"
+    "start": "./node_modules/.bin/esbuild app.tsx --bundle --define:process.env.NODE_ENV=\\\"development\\\" --servedir=. --outfile=dist/app.js"
   },
   "author": "",
   "license": "ISC",

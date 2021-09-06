@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { IWaveFn } from './Service';
 
 // Exported to users of Plot to adhere to
 // plot is the type of function that Plot expects
@@ -7,10 +8,9 @@ import React, { useRef, useEffect } from 'react';
 // of all functions at that point. The internals of plot may be something 
 // like a reduction over a group of whatever functions. But we don't care
 // we just know the `x` value and want to plot the relative `y` values.
-type PlotFn = (x:number) => number[];
 
-export interface Plot {
-  plot:PlotFn
+interface IPlot {
+  fn:IWaveFn
   width:number,
   height:number,
 }
@@ -22,9 +22,9 @@ export interface Plot {
  * with a context?
  * @param props
  */
-const Plot = (props:Plot) => {
+const Plot = (props:IPlot)=> {
   let canvasRef = useRef(null);
-  let { width, height, expressions } = props;
+  let { width, height, fn } = props;
   let radiansPerPx = (Math.PI * 4) / width;
 
   // Peg board background
@@ -44,9 +44,9 @@ const Plot = (props:Plot) => {
     ctx.strokeStyle = "hsla(0,0%,0%,.4)";
     for (let x = 0; x <= width; x = x + 10) {
       // Produce a y val for each expression -> [ y, y, y ]
-      let y = expressions.map(exprFn => exprFn((x + (offset * 10)) * radiansPerPx))
+      let ys = fn((x + (offset * 10)) * radiansPerPx);
       // Push this up to the calling code ---v
-      y.map(y => {
+      ys.map(y => {
         ctx.beginPath();
         ctx.arc(x, (height/2) + y, 1, 0, 6.28);
         ctx.stroke();
@@ -87,9 +87,9 @@ const Plot = (props:Plot) => {
 
     return () => cancelAnimationFrame(frameId)
 
-  },[expressions]);
+  },[fn]);
 
   return <canvas ref={canvasRef}/>
 }
 
-export default Plot;
+export { Plot, IPlot };

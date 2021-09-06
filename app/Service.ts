@@ -1,4 +1,4 @@
-import { Plot } from "./Plot";
+// Really a use-case?
 
 // Domain.ts
 enum Combiner {
@@ -12,43 +12,42 @@ type Desc = {
   combiner:Combiner
 }
 
-interface Compiler {
-  compile:(source:string) => string
+type IWaveFn = (x:number) => number[]
+
+interface CreateWaveUseCase {
+  compile:(source:Desc) => IWaveFn
 }
 
-type PlotFn = (x:number) => number[]
+class Service implements CreateWaveUseCase {
+  compiler
 
-interface ExpressionCompiler {
-  compile:(source:Desc) => PlotFn
-}
-
-// But Service -> UI breaks the dependancy direction
-// so where can we locate this? Is this only a concern of the UI?
-// the functional expression/equivalent of the input Desc type
-// distill all the taking of expressions into a single function
-// which shows either aggregate or each input
-type DescFn = (x:number) => number[];
-
-const max = (funcs:Function[]) => {
-  return [x => Math.max(...funcs.map(f => f(x)))]
-}
-
-class Service implements ExpressionCompiler {
-  compiler:Compiler
-
-  constructor(compiler:Compiler) {
+  constructor(compiler) {
     this.compiler = compiler;
   }
 
-  compile(exprs:Desc): PlotFn {
+  compile(exprs:Desc): IWaveFn {
     try {
-      let fn = this.compiler.compile(exprs.expressions[0]);
-      if (typeof fn === "string")
-        return Function("x", `return ${fn}`) as PlotFn;
+      let functions = exprs.expressions.map(e => {
+        let fn:(x:number) => number  = this.compiler.compile(e);
+        if (typeof fn === "string")
+          return Function("x", `return ${fn}`);
+        return (x:number) => x
+      })
+      
+      return (x:number):number[] => {
+        switch (exprs.combiner){
+          case Combiner.Max: break;
+          case Combiner.Min: break;
+          case Combiner.None: {
+            return (functions.map(f => f(x)))
+            break;
+          }
+        }
+      };
     } catch (error) {
       console.error(error);
     }
   }
 }
 
-export { Compiler, ExpressionCompiler as FunctionCompiler }
+export { IWaveFn, Service, Desc, Combiner, CreateWaveUseCase };
