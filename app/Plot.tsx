@@ -1,13 +1,7 @@
-import React, { useRef, useEffect } from 'react';
-import { IWaveFn } from './Service';
+// Responsible for displaying 
 
-// Exported to users of Plot to adhere to
-// plot is the type of function that Plot expects
-// to be able to render from; it accepts a number (denoted as `x`)
-// and returns an array of numbers which correspond to the evaluation
-// of all functions at that point. The internals of plot may be something 
-// like a reduction over a group of whatever functions. But we don't care
-// we just know the `x` value and want to plot the relative `y` values.
+import React, { useRef, useEffect } from 'react';
+import { IWaveFn } from './service';
 
 interface IPlot {
   fn:IWaveFn
