@@ -6,7 +6,8 @@ import { Plot } from './plot.jsx'
 
 // Configure the application service with a compiler and pass to App
 let service = new Service.Service(compiler);
-let gen = (function* indexGenerator(){
+
+let id = (function* indexGenerator(){
   for (let index = 0; index < 15; index++) {
     yield index;
   }
@@ -28,10 +29,13 @@ type Desc = {
  */
 const App = ({service}) => {
   // Desc of a wave
-  let [ desc, setDesc ] = useState<Desc>({ expressions:{}, combiner:Service.Combiner.Min });
+  let [ desc, setDesc ] = useState<Desc>({ expressions:[], combiner:Service.Combiner.Min });
   // `exprFn` is the resulting function compiled from our `desc` expressions
   let [ exprFn, setExprFn ] = useState({fn:(x:number) => []});
 
+  //----------------------
+  //--- Event handlers ---
+  //----------------------
   const handleCombinerChange = (combiner) => {
     setDesc({
       ...desc,
@@ -39,8 +43,7 @@ const App = ({service}) => {
     })
   }
 
-  // Update corresponding expression when the input value changes
-  const handleInputChange = ({target},idx) => {
+  const handleInputChange = ({target},idx:number) => {
     setDesc({
       ...desc,
       expressions:{
@@ -50,23 +53,25 @@ const App = ({service}) => {
     });
   }
 
-  const addExpressionInput = () => {
+  const addExpressionInput = (val="") => {
     // Get our next index
-    let {value,done} = gen.next()
+    let {value,done} = id.next()
     // While we're not done (we have indices remaining), create the expression
     if (!done)
       setDesc({
         ...desc,
         expressions:{
           ...desc.expressions,
-          [value]:""
+          [value]: val
         }
       })
   }
 
-  // init
+  //-------------
+  //--- Setup ---
+  //-------------
   useEffect(() => {
-    addExpressionInput();
+    addExpressionInput("cos(x / 2) * 30");
   },[])
 
   // Build our `Desc` to send to the compiler

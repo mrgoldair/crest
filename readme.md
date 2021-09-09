@@ -4,6 +4,8 @@
 ## TODO
 - ~~Scroll the waves right to left~~
 - Layer multiple waves
+  - Colour waves for easier identification
+  - Drag 'n' drop to move expressions around?
   - By composing functions `{Int -> Int . Int -> Int}`
   - Each successive pair can be combined via an operation e.g. addition, subtraction or even min/max
   - Where should the responsabilities lay? Should `Canvas` know about expressions? Should the expressions know how they're being rendered? If each expression constitutes a curve i.e. there's no accumulation function between curve expressions, since the canvas is rendering curves should it know about this technicality?
@@ -60,4 +62,32 @@ There is the **variable declaration** statement. This introduces a binding betwe
 
 ## Compiling to JS
 
-What's the best way?
+What's the best way? Because we ultimately want a funciton of the form
+
+```typescript
+type Fn = (x:number):number
+```
+
+we can't simply interperet the expression and return a single value; this function needs to be run for a range of $x$ values. Instead, I opted to return a valid Javascipt string expression for example: an input expression of
+
+```
+cos(x/10) * 5
+```
+
+Would be compiled to
+
+```typescript
+"Math.cos(x/10) * 5"
+```
+
+This then get's compiled to a real Javascript function outside of the Crest compiler, like so
+
+```typescript
+new Function("x", "return ${expression}")
+```
+
+## State
+
+App state (referring to the state within App.tsx) is currently a mish-mash of `Maps` and `Arrays`. Maps make it nice to update an existing expression which is indexed by a surrogate Id. However there's no way to use the keys and values in an expression to succinctly create UI elements (`<input>`, in our case). Using arrays as the basis for holding expressions makes it trivial to use as an expression for UI elements, but tedious to update which devolves to a linear search through the array for the element to update.
+
+Using `Map` 
