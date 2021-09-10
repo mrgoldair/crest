@@ -19,14 +19,14 @@ let id = (function* indexGenerator() {
  */
 const App = ({service}) => {
   // Desc of a wave
-  let [ desc, setDesc ] = useState<Service.Desc>(new Map<Id,Descriptor>());
+  let [ desc, setDesc ] = useState<Service.Desc>(new Map<Service.Id,Service.Descriptor>());
   // `exprFn` is the resulting function compiled from our `desc` expressions
   let [ exprFn, setExprFn ] = useState({fn:(x:number) => [0]});
 
   //----------------------
   //--- Event handlers ---
   //----------------------
-  const handleCombinerChange = (id:Id,combiner:number) => {
+  const handleCombinerChange = (id:Service.Id,combiner:number) => {
     let a:Path = {
       ...desc.get(id) as Path,
       op:combiner
@@ -44,11 +44,11 @@ const App = ({service}) => {
       return
 
     let {value} = id.next();
-    let p:Path = {
+    let p:Service.Path = {
       kind: "path",
       value: [ 0,0 ]
               .concat([...desc.keys()])
-              .slice(-2) as [ Id,Id ],
+              .slice(-2) as [ Service.Id, Service.Id ],
       op: combinator,
     }
 

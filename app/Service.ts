@@ -23,11 +23,6 @@ type Path = {
 
 type Descriptor = Expression | Path
 
-type Descd = {
-  expressions: Map<Id,Descriptor>
-  combinations?: Combo[]
-}
-
 type Desc = Map<Id,Descriptor>
 
 // The type of function `Desc` requests are compiled to
@@ -75,4 +70,4 @@ class Service implements CreateWaveUseCase {
   }
 }
 
-export { IWaveFn, Service, Desc, Op, CreateWaveUseCase };
+export { IWaveFn, Service, Desc, Op, Id, Path, Descriptor, CreateWaveUseCase };
