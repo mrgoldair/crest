@@ -27,8 +27,8 @@ const App = ({service}) => {
   //--- Event handlers ---
   //----------------------
   const handleCombinerChange = (id:Service.Id,combiner:number) => {
-    let a:Path = {
-      ...desc.get(id) as Path,
+    let a:Service.Path = {
+      ...desc.get(id) as Service.Path,
       op:combiner
     }
 
