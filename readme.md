@@ -90,4 +90,6 @@ new Function("x", "return ${expression}")
 
 App state (referring to the state within App.tsx) is currently a mish-mash of `Maps` and `Arrays`. Maps make it nice to update an existing expression which is indexed by a surrogate Id. However there's no way to use the keys and values in an expression to succinctly create UI elements (`<input>`, in our case). Using arrays as the basis for holding expressions makes it trivial to use as an expression for UI elements, but tedious to update which devolves to a linear search through the array for the element to update.
 
-Using `Map` 
+State as maps all-the-way-down with the base type being a map with keys for expressions and combinations. The next was to try combine expressions and combinations as a recursive type. This was the initial design but quickly got unwieldy once it was realised a basic expression type could be used in multiple places and updating them all would be cost prohibitive and problematic. 
+
+The next design was to normalise each expression. Complex waves would be not be literal but instead have a path of constituent wave via their Ids.

@@ -3,26 +3,39 @@
  * each expression and assembling the resulting wave function according
  * to the requested `Combiner`.
  */
+type Id = number;
 
-// Describes the ways in which expressions can be combined
-enum Combiner {
-  None,
+enum Op {
   Min,
-  Max,
+  Max
 }
 
-// `Desc` is the way requests are send to this service
-type Desc = {
-  expressions: string[],
-  combiner:Combiner
+type Expression = {
+  kind: "expression"
+  value: string
 }
+
+type Path = {
+  kind: "path"
+  value: [ Id, Id ]
+  op: Op
+}
+
+type Descriptor = Expression | Path
+
+type Descd = {
+  expressions: Map<Id,Descriptor>
+  combinations?: Combo[]
+}
+
+type Desc = Map<Id,Descriptor>
 
 // The type of function `Desc` requests are compiled to
 type IWaveFn = (x:number) => number[]
 
 // Given a source of `Desc` attempt to compile a function of type IWaveFn
 interface CreateWaveUseCase {
-  compile:(source:Desc) => IWaveFn
+  create:(source:Desc) => IWaveFn
 }
 
 class Service implements CreateWaveUseCase {
@@ -32,36 +45,34 @@ class Service implements CreateWaveUseCase {
     this.compiler = compiler;
   }
 
-  compile(exprs:Desc): IWaveFn {
-    try {
-      // Compile expressions to legitimate functions
-      let functions = exprs.expressions.map(e => {
-        let fn = this.compiler.compile(e);
-        // Perhaps push function creation back to compiler
-        if (typeof fn === "string")
-          return Function("x", `return ${fn}`);
-        // If we have compile errors, just return an identity func
-        return (x:number) => x
-      })
-      
-      // Return our resulting function - the choices of combiner mean
-      // we don't care about expression order, but at some point `Combiner` may
-      // include types where we do
-      switch (exprs.combiner){
-        case Combiner.Max:
-          return (x:number) => [Math.max(...functions.map(f => f(x)))]
+  compile(source:string):(x:number) => number {
+    // Compile expressions to legitimate functions
+    let fn = this.compiler.compile(source);
+    // Perhaps push function creation back to compiler
+    if (typeof fn === "string")
+      return Function("x", `return ${fn}`) as (x:number) => number;
+    // If we have compile errors, just return an identity func
+    return (x:number) => x
+  }
+
+  create(desc:Desc): IWaveFn {
+  
+    let r = [...desc.entries()].reduce((acc,[ k,v ]) => {
+      switch (v.kind){
+        case "expression":
+          acc.set(k, this.compile(v.value));
           break;
-        case Combiner.Min:
-          return (x:number) => [Math.min(...functions.map(f => f(x)))]
-          break;
-        case Combiner.None:
-          return (x:number) => functions.map(f => f(x))
+        case "path":
+          let [ a,b ] = v.value.map(k => acc.get(k));
+          acc.set( k, (x:number) => 0.5 * a(x) + 0.5 * b(x));
           break;
       }
-    } catch (error) {
-      console.error(error);
-    }
+  
+      return acc;
+    }, new Map<Id,(x:number) => number>())
+  
+    return (x:number) => [...r.values()].map(f => f(x))
   }
 }
 
-export { IWaveFn, Service, Desc, Combiner, CreateWaveUseCase };
+export { IWaveFn, Service, Desc, Op, CreateWaveUseCase };
