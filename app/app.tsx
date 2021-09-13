@@ -109,7 +109,7 @@ const App = ({service}) => {
   
   return (
     <div>
-      <Plot fn={exprFn.fn} width={300} height={150} />
+      <Plot fn={exprFn.fn} width={1000} height={150} />
       <div style={{display:'flex', alignItems:'center'}}>
         {inputs}
         <div className="">

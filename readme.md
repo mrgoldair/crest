@@ -1,12 +1,14 @@
 # CREST
 ### A DSL for writing waves
 
-## TODO
+## *BUILD NOTES* /*ISSUES* / *TODO*
 - ~~Scroll the waves right to left~~
 - Layer multiple waves
+  - The functional design of unlimited expressions is posing a problem with UI design; how to show and navigate each and every expression and add new ones? Perhaps the difficulty is informing me that the design should be constrained to a limited number of expression *"slots"* .
+  - Maybe constrain the number of expressions?
+  - Delete expressions
   - Colour waves for easier identification
   - Drag 'n' drop to move expressions around?
-  - By composing functions `{Int -> Int . Int -> Int}`
   - Each successive pair can be combined via an operation e.g. addition, subtraction or even min/max
   - Where should the responsabilities lay? Should `Canvas` know about expressions? Should the expressions know how they're being rendered? If each expression constitutes a curve i.e. there's no accumulation function between curve expressions, since the canvas is rendering curves should it know about this technicality?
   - Maybe the structure should be a map instead of an array and the ordering explicit instead of implicitly defined by the array?
@@ -93,3 +95,7 @@ App state (referring to the state within App.tsx) is currently a mish-mash of `M
 State as maps all-the-way-down with the base type being a map with keys for expressions and combinations. The next was to try combine expressions and combinations as a recursive type. This was the initial design but quickly got unwieldy once it was realised a basic expression type could be used in multiple places and updating them all would be cost prohibitive and problematic. 
 
 The next design was to normalise each expression. Complex waves would be not be literal but instead have a path of constituent wave via their Ids.
+
+So now there's a list of "descriptors". These are either an Expression (text representation of a wave), or a Path (a tuple of previous expression Ids). The structure is now flat so we cannot recursively render. Thinking about this, the better representation would be a tree of components but having each level normalised references for the children – the best of both worlds. This side-steps the issue of duplicated expressions in a tree form, but also gives us the flexibility of referencing expressions via an identity.
+
+This is impacted by my latest idea of constraining the expressions to a limited number (8, say). Having wrestled with creating an easily navigable UI for an unlimited number of expressions, perhaps the informed idea is to pull back and go smaller.

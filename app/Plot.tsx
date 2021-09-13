@@ -46,9 +46,10 @@ const Plot = (props:IPlot)=> {
       // Produce a y val for each expression -> [ y, y, y ]
       let ys = fn((x + (offset * 10)) * radiansPerPx);
       // Push this up to the calling code ---v
-      ys.map(y => {
+      ys.map((y,i,xs) => {
         ctx.beginPath();
-        ctx.arc(x, (height/2) + y, 1, 0, 6.28);
+        ctx.strokeStyle = `hsla(0,0%,100%,${i * (0.8/xs.length) + 0.2})`; 
+        ctx.arc(x, (height/2) + y, .5, 0, 6.28);
         ctx.stroke();
       });
     }
@@ -58,8 +59,8 @@ const Plot = (props:IPlot)=> {
   useEffect(() => {
     let canvas = canvasRef.current;
     let ctx = canvas.getContext('2d');
-    canvas.style.width = width + "px";
-    canvas.style.height = height + "px";
+    canvas.style.width = width;
+    canvas.style.height = height;
     // Make our backing canvas double the density
     canvas.width = width = width * 2;
     canvas.height = height = height * 2;
@@ -78,7 +79,7 @@ const Plot = (props:IPlot)=> {
         elapsed = timestamp;
         ctx.clearRect(0, 0, width, height);
         // Draw!
-        plotBackground(ctx);
+        //plotBackground(ctx);
         offset = plotCurve(ctx, offset + 1);
       }
     }
