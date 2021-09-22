@@ -1,25 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import { ReactDOM } from "react";
+import { Id, Op, Merge } from './domain.js';
 
-// import { Id, Op } from './domain.ts';
-
-const Literal = ({value,onChange}) => {
+const Literal = ({ value, onChange }) => {
   return <input type="text" value={value} onChange={onChange} />
 }
 
-const Merge = ({operands:Id[], op:Op}) => {
-  return
-    <div className="">
-      <select>
-        {operands.map(x => <option value={x}>x</option>)}
+type Props = {
+  expressions:[ Id, Id ]
+  slots: Id[]
+  op:Op
+  onChange:(op:Op, expressions:[Id,Id]) => void
+}
+
+const Merge = ({ slots, expressions, op, onChange }:Props) => {
+
+  let [ l,r ] = expressions;
+
+  return (
+    <div>
+      <select value={l} onChange={e => onChange(op,[ Number(e.target.value), r ])}>
+        {slots.map((slot:Id) => <option value={slot}  key={slot}>{slot}</option>)}
       </select>;
-      <select>
-        {operands.map(x => <option value={x}>x</option>)}
+      <select onChange={e => onChange( Number(e.target.value), expressions )}>
+        {[...Object.entries(Op)].map(([k,v]) => <option value={op} key={k}>{v}</option>)}
       </select>;
-      <select>
-        {op.map(x => <option value={x}>x</option>)}
+      <select value={r} onChange={e => onChange(op,[ l, Number(e.target.value) ])}>
+        {slots.map((slot:Id) => <option value={slot} key={slot}>{slot}</option>)}
       </select>;
-    </div>
+    </div>);
 }
 
 export { Literal, Merge };

@@ -99,3 +99,5 @@ The next design was to normalise each expression. Complex waves would be not be 
 So now there's a list of "descriptors". These are either an Expression (text representation of a wave), or a Path (a tuple of previous expression Ids). The structure is now flat so we cannot recursively render. Thinking about this, the better representation would be a tree of components but having each level normalised references for the children – the best of both worlds. This side-steps the issue of duplicated expressions in a tree form, but also gives us the flexibility of referencing expressions via an identity.
 
 This is impacted by my latest idea of constraining the expressions to a limited number (8, say). Having wrestled with creating an easily navigable UI for an unlimited number of expressions, perhaps the informed idea is to pull back and go smaller.
+
+Should the UI layer not use types from the domain? In other words, should the only use of a lower layer be via a port? We should not utilise domain types in the UI layer but they should be parsed from more primitive types...?

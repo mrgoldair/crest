@@ -8,16 +8,11 @@ import * as UI from './ui.jsx'
 // Configure the application service with a compiler and pass to App
 let service = new Service.Service(compiler);
 
-// let id = (function* indexGenerator() {
-//   for (let index = 0; index < 15; index++) {
-//     yield index;
-//   }
-//   return 16;
-// })()
-
+// Domain types
 type Id = number;
 
 enum Op {
+  NONE,
   ADD,
   SUB
 }
@@ -25,14 +20,14 @@ enum Op {
 type Merge = {
   kind: "merge"
   op: Op
-  operands: Id[]
+  expressions: [ Id, Id ]
 }
 const Merge = {
-  of(op:Op, operands:Id[]):Merge {
+  of(op:Op, expressions:[ Id, Id ]):Merge {
     return {
       kind: "merge",
       op,
-      operands
+      expressions
     }
   }
 }
@@ -53,15 +48,15 @@ const Literal = {
 type Empty = {
   kind: "empty"
 }
-const Empty = {
-  of():Empty {
-    return { kind: "empty" }
-  }
+const Empty = () => {
+  return { kind: "empty" } as Empty
 }
 
+type E = "Equation" | "Mix"
 type Expr = Literal | Merge
 type Slot = Expr | Empty
 //type Slott<T> = Empty | T
+type Slott<T> = Map<Id,T | Empty>
 
 /**
  * Composition root
@@ -69,9 +64,13 @@ type Slot = Expr | Empty
 const App = ({service}) => {
   // Desc of a wave
   let state = new Map<Id,Slot>([
-    [ 1, Empty.of() ],
-    [ 2, Empty.of() ],
-    [ 3, Empty.of() ]
+    [ 1, Empty() ],
+    [ 2, Empty() ],
+    [ 3, Empty() ],
+    [ 4, Empty() ],
+    [ 5, Empty() ],
+    [ 6, Empty() ],
+    [ 7, Empty() ]
   ]);
   let [ desc, setDesc ] = useState<Map<Id,Slot>>(state);
   // `exprFn` is the resulting function compiled from our `desc` expressions
@@ -101,10 +100,10 @@ const App = ({service}) => {
   }
 
   // UI.Merge
-  const handleMergeChange = (id:Id, op:Op, operands:Id[]) => {
+  const handleMergeChange = (id:Id) => (op:Op, expressions:[ Id, Id ]) => {
     setDesc(new Map([
       ...desc,
-      [ id, Merge.of(op,operands) ]
+      [ id, Merge.of(op,expressions) ]
     ]))
   }
 
@@ -132,7 +131,14 @@ const App = ({service}) => {
   //     </React.Fragment>)
   // }
   
-  const addMergeExpression = (id:Id) => {}
+  // Can only be used with two existing expressions
+  const addMergeExpression = (id:Id, expressionsIds:[ Id,Id ]) => {
+    setDesc(new Map([
+      ...desc,
+      [ id, Merge.of(Op.NONE, expressionsIds) ]
+    ]))
+  }
+
   const addLiteralExpression = (id:Id) => {
     // Get our next index
     //let { value, done } = id.next()
@@ -144,18 +150,24 @@ const App = ({service}) => {
       ]))
   }
 
+  const slots = () => {}
+
+  // Mmmm maybe this could all go in a <Slot/>
   return (
-    <div>
-      <div style={{display:'flex', alignItems:'center'}}>
+    <>
+      <div id="expressions" style={{display:'flex', alignItems:'center'}}>
         {[...desc.entries()].map(([k,v]) => {
-          // Render the control if it exists
           switch (v.kind){
             case "empty":
-              return (
-                <div className="" key={k}>
-                  <button onClick={e => addMergeExpression(k)}>Add Merge Expression</button>
-                  <button onClick={e => addLiteralExpression(k)}>Add Expression</button>
-                </div>);
+              if ([...desc.values()].filter(expr => expr.kind !== "empty").length >= 2){
+                return (
+                  <div key={k}>
+                    <button onClick={e => addMergeExpression(k,[ (k-2),(k-1) ])}>Add Merge Expression</button>
+                    <button onClick={e => addLiteralExpression(k)}>Add Expression</button>
+                  </div>);
+              } else {
+                return <button key={k} onClick={e => addLiteralExpression(k)}>Add Expression</button>
+              }
               break;
             case "literal":
               // return <UI.Literal />
@@ -163,12 +175,13 @@ const App = ({service}) => {
               break;
             case "merge":
               // return <UI.Merge />
+              return <UI.Merge expressions={v.expressions} slots={[...desc.keys()]} op={v.op} onChange={handleMergeChange(k)} key={k} />
               break;
           }
         })}
       </div>
-      <Plot fn={exprFn.fn} width={1000} height={150} />
-    </div>
+      <Plot fn={exprFn.fn} dimensions={"auto"} />
+    </>
   );
 }
 

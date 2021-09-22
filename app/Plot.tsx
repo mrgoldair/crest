@@ -9,10 +9,16 @@
 import React, { useRef, useEffect } from 'react';
 import { IWaveFn } from './service';
 
+type Specified = {
+  width:number
+  height:number
+}
+
+type Dimension = Specified | "auto";
+
 interface IPlot {
   fn:IWaveFn
-  width:number,
-  height:number,
+  dimensions: Dimension
 }
 
 /**
@@ -24,8 +30,10 @@ interface IPlot {
  */
 const Plot = (props:IPlot)=> {
   let canvasRef = useRef(null);
-  let { width, height, fn } = props;
-  let radiansPerPx = (Math.PI * 4) / width;
+  let { dimensions, fn } = props;
+  let radiansPerPx;
+  let width;
+  let height;
 
   // Peg board background
   const plotBackground = ctx => {
@@ -48,7 +56,7 @@ const Plot = (props:IPlot)=> {
       // Push this up to the calling code ---v
       ys.map((y,i,xs) => {
         ctx.beginPath();
-        ctx.strokeStyle = `hsla(0,0%,100%,${i * (0.8/xs.length) + 0.2})`; 
+        ctx.strokeStyle = `hsla(0,0%,100%,${(1 - (i/10)) * (0.8/xs.length) + 0.2})`; 
         ctx.arc(x, (height/2) + y, .5, 0, 6.28);
         ctx.stroke();
       });
@@ -59,11 +67,24 @@ const Plot = (props:IPlot)=> {
   useEffect(() => {
     let canvas = canvasRef.current;
     let ctx = canvas.getContext('2d');
-    canvas.style.width = width;
-    canvas.style.height = height;
-    // Make our backing canvas double the density
-    canvas.width = width = width * 2;
-    canvas.height = height = height * 2;
+
+    switch (dimensions){
+      case "auto":
+        let rect = canvas.getBoundingClientRect();
+        canvas.style.width = Math.floor(rect.width);
+        canvas.style.height = Math.floor(rect.height);
+        canvas.width = width = Math.floor(rect.width) * 2;
+        canvas.height = height = Math.floor(rect.height) * 2;
+        break;
+      default:
+        canvas.style.width = dimensions.width;
+        canvas.style.height = dimensions.height;
+        canvas.width = width = dimensions.width * 2;
+        canvas.height = height = dimensions.height * 2;
+        break;
+    }
+
+    radiansPerPx = (Math.PI * 4) / width;
 
     // Beginning time
     let elapsed = 0;
@@ -90,7 +111,7 @@ const Plot = (props:IPlot)=> {
 
   },[fn]);
 
-  return <canvas ref={canvasRef}/>
+  return <canvas id="plot" ref={canvasRef}/>
 }
 
 export { Plot, IPlot };
