@@ -52,11 +52,10 @@ const Empty = () => {
   return { kind: "empty" } as Empty
 }
 
-type E = "Equation" | "Mix"
 type Expr = Literal | Merge
 type Slot = Expr | Empty
-//type Slott<T> = Empty | T
-type Slott<T> = Map<Id,T | Empty>
+//type Slott<T> = Map<Id,T | Empty>
+
 
 /**
  * Composition root
@@ -79,17 +78,6 @@ const App = ({service}) => {
   //----------------------
   //--- Event handlers ---
   //----------------------
-  // const handleCombinerChange = (id:Service.Id,combiner:number) => {
-  //   let a:Service.Path = {
-  //     ...desc.get(id) as Service.Path,
-  //     op:combiner
-  //   }
-
-  //   setDesc(new Map([
-  //     ...desc,
-  //     [ id, a ]
-  //   ]))
-  // }
 
   // UI.Literal
   const handleLiteralChange = (idx:Id,value:string) => {
@@ -112,24 +100,19 @@ const App = ({service}) => {
     // This is all for getting UI.Desc -> Service.Desc form as the service
     // doesn't care about our expression indices, it just wants to compile the
     // expressions and then combine them.
-    // let fn = service.create(desc) as Service.IWaveFn;
-    // setExprFn({fn:fn});
+    let d = [...desc.entries()]
+              .filter(([k,slot]) => slot.kind !== "empty")
+              .reduce((acc,[k,slot]) => {
+                switch (slot.kind){
+                  case "literal":
+                    return acc.set(k, { kind: "expression", value: slot.expr })
+                  case "merge":
+                    return acc.set(k, { kind: "path", value: slot.expressions, op: Service.Op.Min })
+                }
+              }, new Map<Id,Service.Descriptor>());
+    let fn = service.create(d) as Service.IWaveFn;
+    setExprFn({fn:fn});
   }, [desc])
-
-  // let inputs = [];
-  // for (let [ k, v ] of desc.entries()) {
-  //   inputs.push(<input key={k} value={v.value.toString()} onChange={e => handleInputChange(e.target,Number(k)) } />);
-  // }
-  
-  // let radios = []
-  // for (let k in Service.Op){
-  //   if(Number.isNaN(Number(k)))
-  //     radios.push(
-  //     <React.Fragment key={k}>
-  //       <input type="radio" id={Service.Op[k]} value={k} name="combiner" onClick={e => handleCombinerChange(Number(k), Number(k))} ></input>
-  //       <label htmlFor={Service.Op[k]}>{k}</label>
-  //     </React.Fragment>)
-  // }
   
   // Can only be used with two existing expressions
   const addMergeExpression = (id:Id, expressionsIds:[ Id,Id ]) => {

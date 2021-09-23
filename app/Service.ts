@@ -50,6 +50,17 @@ class Service implements CreateWaveUseCase {
     return (x:number) => x
   }
 
+  combine(a:(x:number) => number, b:(x:number) => number, op:Op):(x:number) => number {
+    switch (op){
+      case Op.Min:
+        return (x:number) => Math.min(a(x),b(x))
+        break;
+      case Op.Max:
+        return (x:number) => Math.max(a(x),b(x))
+        break;
+    }
+  }
+
   create(desc:Desc): IWaveFn {
   
     let r = [...desc.entries()].reduce((acc,[ k,v ]) => {
@@ -59,7 +70,7 @@ class Service implements CreateWaveUseCase {
           break;
         case "path":
           let [ a,b ] = v.value.map(k => acc.get(k));
-          acc.set( k, (x:number) => 0.5 * a(x) + 0.5 * b(x));
+          acc.set( k, this.combine(a,b,v.op) );
           break;
       }
   
