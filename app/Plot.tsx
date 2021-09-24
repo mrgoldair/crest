@@ -49,15 +49,14 @@ const Plot = (props:IPlot)=> {
 
   // At the moment we're complecting traversal and row/col layout
   const plotCurve = (ctx, offset = 0) => {
-    ctx.strokeStyle = "hsla(0,0%,0%,.8)";
-    for (let x = 0; x <= width; x = x + 10) {
+    for (let x = 0; x <= width; x = x + 40) {
       // Produce a y val for each expression -> [ y, y, y ]
-      let ys = fn((x + (offset * 10)) * radiansPerPx);
+      let ys = fn((x + (offset * 40)) * radiansPerPx);
       // Push this up to the calling code ---v
       ys.map((y,i,xs) => {
         ctx.beginPath();
-        ctx.strokeStyle = `hsla(0,0%,100%,${(1 - (i/10)) * (0.8/xs.length) + 0.2})`; 
-        ctx.arc(x, (height/2) + y, .5, 0, 6.28);
+        ctx.strokeStyle = `hsla(0, 0%, 100%, ${(i + 1) / xs.length - (1 - ((i + 1) / xs.length))})`; 
+        ctx.arc(x, (height/2) + y, 1, 0, 6.28);
         ctx.stroke();
       });
     }

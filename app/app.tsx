@@ -1,61 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { render } from 'react-dom';
 import { Crest as compiler } from 'crest-compiler';
+import { Literal, LiteralOf, Aggregate, AggregateOf, Id, Op } from './domain.js';
 import * as Service from './service.js';
 import { Plot } from './plot.jsx'
 import * as UI from './ui.jsx'
 
-// Configure the application service with a compiler and pass to App
 let service = new Service.Service(compiler);
 
-// Domain types
-type Id = number;
-
-enum Op {
-  NONE,
-  ADD,
-  SUB
-}
-
-type Merge = {
-  kind: "merge"
-  op: Op
-  expressions: [ Id, Id ]
-}
-const Merge = {
-  of(op:Op, expressions:[ Id, Id ]):Merge {
-    return {
-      kind: "merge",
-      op,
-      expressions
-    }
-  }
-}
-
-type Literal = {
-  kind: "literal"
-  expr: string
-}
-const Literal = {
-  of(value:string):Literal {
-    return {
-      kind:"literal",
-      expr: value
-    }
-  }
-}
-
+// UI specific types
 type Empty = {
   kind: "empty"
 }
+
 const Empty = () => {
   return { kind: "empty" } as Empty
 }
 
-type Expr = Literal | Merge
-type Slot = Expr | Empty
-//type Slott<T> = Map<Id,T | Empty>
-
+// Domain + UI types
+type Slot = Literal | Aggregate | Empty
 
 /**
  * Composition root
@@ -79,46 +42,42 @@ const App = ({service}) => {
   //--- Event handlers ---
   //----------------------
 
-  // UI.Literal
   const handleLiteralChange = (idx:Id,value:string) => {
     setDesc(new Map([
       ...desc,
-      [ idx, Literal.of(value) ]
+      [ idx, LiteralOf(value) ]
     ]));
   }
 
-  // UI.Merge
   const handleMergeChange = (id:Id) => (op:Op, expressions:[ Id, Id ]) => {
     setDesc(new Map([
       ...desc,
-      [ id, Merge.of(op,expressions) ]
+      [ id, AggregateOf(op,expressions) ]
     ]))
   }
 
-  // Build our `Desc` to send to the compiler
   useEffect(() => {
-    // This is all for getting UI.Desc -> Service.Desc form as the service
-    // doesn't care about our expression indices, it just wants to compile the
-    // expressions and then combine them.
     let d = [...desc.entries()]
               .filter(([k,slot]) => slot.kind !== "empty")
               .reduce((acc,[k,slot]) => {
                 switch (slot.kind){
                   case "literal":
-                    return acc.set(k, { kind: "expression", value: slot.expr })
-                  case "merge":
-                    return acc.set(k, { kind: "path", value: slot.expressions, op: Service.Op.Min })
+                    return acc.set(k, { kind: "literal", expr: slot.expr })
+                  case "aggregate":
+                    return acc.set(k, { kind: "aggregate", expressions: slot.expressions, op: Op.MIN })
                 }
-              }, new Map<Id,Service.Descriptor>());
+              }, new Map<Id,Literal | Aggregate>());
+
+    // Create our final plot-able function
     let fn = service.create(d) as Service.IWaveFn;
+    // Update the state so <Plot/> is aware
     setExprFn({fn:fn});
   }, [desc])
   
-  // Can only be used with two existing expressions
   const addMergeExpression = (id:Id, expressionsIds:[ Id,Id ]) => {
     setDesc(new Map([
       ...desc,
-      [ id, Merge.of(Op.NONE, expressionsIds) ]
+      [ id, AggregateOf(Op.ADD, expressionsIds) ]
     ]))
   }
 
@@ -129,7 +88,7 @@ const App = ({service}) => {
     //if (!done)
       setDesc(new Map([
         ...desc,
-        [ id, Literal.of("") ]
+        [ id, LiteralOf("") ]
       ]))
   }
 
@@ -145,7 +104,7 @@ const App = ({service}) => {
               if ([...desc.values()].filter(expr => expr.kind !== "empty").length >= 2){
                 return (
                   <div key={k}>
-                    <button onClick={e => addMergeExpression(k,[ (k-2),(k-1) ])}>Add Merge Expression</button>
+                    <button onClick={e => addMergeExpression(k,[ (k-2),(k-1) ])}>Add Aggregate Expression</button>
                     <button onClick={e => addLiteralExpression(k)}>Add Expression</button>
                   </div>);
               } else {
@@ -156,9 +115,9 @@ const App = ({service}) => {
               // return <UI.Literal />
               return <UI.Literal key={k} value={v.expr} onChange={e => handleLiteralChange(k, e.target.value)} />
               break;
-            case "merge":
-              // return <UI.Merge />
-              return <UI.Merge expressions={v.expressions} slots={[...desc.keys()]} op={v.op} onChange={handleMergeChange(k)} key={k} />
+            case "aggregate":
+              // return <UI.Aggregate />
+              return <UI.Aggregate expressions={v.expressions} slots={[...desc.keys()]} op={v.op} onChange={handleMergeChange(k)} key={k} />
               break;
           }
         })}

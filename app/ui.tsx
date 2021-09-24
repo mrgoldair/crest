@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { ReactDOM } from "react";
-import { Id, Op, Merge } from './domain.js';
+import React from "react";
+import { Id, Literal, Aggregate, Op, } from './domain.js';
 
 const Literal = ({ value, onChange }) => {
   return <input type="text" value={value} onChange={onChange} />
@@ -13,7 +12,7 @@ type Props = {
   onChange:(op:Op, expressions:[Id,Id]) => void
 }
 
-const Merge = ({ slots, expressions, op, onChange }:Props) => {
+const Aggregate = ({ slots, expressions, op, onChange }:Props) => {
 
   let [ l,r ] = expressions;
 
@@ -31,4 +30,4 @@ const Merge = ({ slots, expressions, op, onChange }:Props) => {
     </div>);
 }
 
-export { Literal, Merge };
+export { Literal, Aggregate };

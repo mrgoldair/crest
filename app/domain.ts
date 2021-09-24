@@ -1,16 +1,38 @@
-
 type Id = number;
 
 enum Op {
-  NONE,
+  MIN,
+  MAX,
   ADD,
   SUB
 }
 
-type Merge = {
-  kind: "merge"
+type Aggregate = {
+  kind: "aggregate"
   op: Op
-  operands: [ Id, Id ]
+  expressions: [ Id, Id ]
 }
 
-export { Merge, Id, Op };
+const AggregateOf = (op:Op, expressions:[ Id, Id ]):Aggregate => {
+  return {
+    kind: "aggregate",
+    op,
+    expressions
+  }
+}
+
+type Literal = {
+  kind: "literal"
+  expr: string
+}
+
+const LiteralOf = (value:string):Literal => {
+  return {
+    kind:"literal",
+    expr: value
+  }
+}
+
+export {
+  Id, Literal, LiteralOf, Aggregate, AggregateOf, Op,
+}

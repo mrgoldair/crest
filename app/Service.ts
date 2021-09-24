@@ -3,27 +3,9 @@
  * each expression and assembling the resulting wave function according
  * to the requested `Combiner`.
  */
-type Id = number;
+import { Literal, Aggregate, Id, Op } from './domain.js';
 
-enum Op {
-  Min,
-  Max
-}
-
-type Expression = {
-  kind: "expression"
-  value: string
-}
-
-type Path = {
-  kind: "path"
-  value: [ Id, Id ]
-  op: Op
-}
-
-type Descriptor = Expression | Path
-
-type Desc = Map<Id,Descriptor>
+type Desc = Map<Id,Literal | Aggregate>
 
 // The type of function `Desc` requests are compiled to
 type IWaveFn = (x:number) => number[]
@@ -50,13 +32,19 @@ class Service implements CreateWaveUseCase {
     return (x:number) => x
   }
 
-  combine(a:(x:number) => number, b:(x:number) => number, op:Op):(x:number) => number {
+  aggregate(a:(x:number) => number, b:(x:number) => number, op:Op):(x:number) => number {
     switch (op){
-      case Op.Min:
+      case Op.MIN:
         return (x:number) => Math.min(a(x),b(x))
         break;
-      case Op.Max:
+      case Op.MAX:
         return (x:number) => Math.max(a(x),b(x))
+        break;
+      case Op.ADD:
+        return (x:number) => a(x) + b(x);
+        break;
+      case Op.SUB:
+        return (x:number) => a(x) - b(x);
         break;
     }
   }
@@ -65,12 +53,12 @@ class Service implements CreateWaveUseCase {
   
     let r = [...desc.entries()].reduce((acc,[ k,v ]) => {
       switch (v.kind){
-        case "expression":
-          acc.set(k, this.compile(v.value));
+        case "literal":
+          acc.set(k, this.compile(v.expr));
           break;
-        case "path":
-          let [ a,b ] = v.value.map(k => acc.get(k));
-          acc.set( k, this.combine(a,b,v.op) );
+        case "aggregate":
+          let [ a,b ] = v.expressions.map(k => acc.get(k));
+          acc.set( k, this.aggregate(a,b,v.op) );
           break;
       }
   
@@ -81,4 +69,7 @@ class Service implements CreateWaveUseCase {
   }
 }
 
-export { IWaveFn, Service, Desc, Op, Id, Path, Descriptor, CreateWaveUseCase };
+export { 
+  // Functions, interfaces and constructors
+  IWaveFn, Service, CreateWaveUseCase
+};

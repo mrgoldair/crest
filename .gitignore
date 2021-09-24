@@ -2,5 +2,4 @@ out
 node_modules
 .test
 .vscode
-sketch
 .DS_Store
