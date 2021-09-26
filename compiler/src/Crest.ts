@@ -37,7 +37,7 @@ export class Crest {
     if( expr ){
       try {
         return new Compiler().compile(expr);
-      } catch (error) {
+      } catch (error:any) {
         Crest.errorLine(1, error);
       }
     }

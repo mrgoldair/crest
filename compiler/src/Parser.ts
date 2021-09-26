@@ -34,8 +34,8 @@ export class Parser {
    * @returns 
    */
   match(...tokenTypes:Array<TokenType>):boolean {
-    for(const type of tokenTypes){
-      if( this.check(type) ){
+    for (const type of tokenTypes){
+      if ( this.check(type) ){
         this.advance();
         return true;
       }
@@ -175,6 +175,9 @@ export class Parser {
         break;
       }
     }
+
+    if (expr instanceof VariableExpr && expr.name.type != TokenType.X)
+      throw this.error(expr.name, "function not a valid operand expression");
 
     return expr;
   }
