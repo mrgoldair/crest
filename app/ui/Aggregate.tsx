@@ -1,9 +1,5 @@
 import React from "react";
-import { Id, Literal, Aggregate, Op, } from './domain.js';
-
-const Literal = ({ value, onChange }) => {
-  return <input type="text" value={value} onChange={onChange} />
-}
+import { Id, Aggregate, AggregateOf, Op, } from '../domain/Types.js';
 
 type Props = {
   expressions:[ Id, Id ]
@@ -30,4 +26,4 @@ const Aggregate = ({ slots, expressions, op, onChange }:Props) => {
     </div>);
 }
 
-export { Literal, Aggregate };
+export { Aggregate };

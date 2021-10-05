@@ -9,6 +9,15 @@ export class Compiler implements ExprVisitor<object> {
 
   constructor(){
     this.globals = new Environment();
+    this.globals.define("sin", new class implements CrestCallable {
+      arity():number {
+        return 1;
+      }
+
+      call(interpreter:Interpreter,[x]:Array<Object>):Object {
+        return `Math.sin(${x})`;
+      }
+    });
     this.globals.define("cos", new class implements CrestCallable {
       arity():number {
         return 1;

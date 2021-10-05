@@ -3,7 +3,7 @@
  * each expression and assembling the resulting wave function according
  * to the requested `Combiner`.
  */
-import { Literal, Aggregate, Id, Op } from './domain.js';
+import { Literal, Aggregate, Id, Op } from './domain/Types.js';
 
 type Desc = Map<Id,Literal | Aggregate>
 

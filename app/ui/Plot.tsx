@@ -7,7 +7,7 @@
  
 
 import React, { useRef, useEffect } from 'react';
-import { IWaveFn } from './service';
+import { IWaveFn } from '../service';
 
 type Specified = {
   width:number
@@ -47,7 +47,35 @@ const Plot = (props:IPlot)=> {
     }
   }
 
-  // At the moment we're complecting traversal and row/col layout
+  const circlePlot = (ctx) => {
+    let radius = 500;
+    let centerX = width / 2;
+    let centerY = height / 2;
+
+    let steps = 500;
+    let radPerStep = (2 * Math.PI) / steps;
+    let radPerCycleStep = (2 * Math.PI) / steps * 30;
+    let cycleRadians = 0;
+  
+    for (let x = 0; x <= (2 * Math.PI); x += radPerStep){
+
+      let rs = fn(cycleRadians);
+
+      rs.map(r => {
+        ctx.beginPath();
+        ctx.strokeStyle = 'white';
+        ctx.arc(centerX + (Math.cos(x) * (radius + r)),
+                centerY + (Math.sin(x) * (radius + r)),
+                1, 0, 6.28)
+        ctx.stroke();
+
+        cycleRadians += radPerCycleStep;
+      })
+
+    }
+  }
+
+  // Line Plot
   const plotCurve = (ctx, offset = 0) => {
     for (let x = 0; x <= width; x = x + 40) {
       // Produce a y val for each expression -> [ y, y, y ]
@@ -55,7 +83,7 @@ const Plot = (props:IPlot)=> {
       // Push this up to the calling code ---v
       ys.map((y,i,xs) => {
         ctx.beginPath();
-        ctx.strokeStyle = `hsla(0, 0%, 100%, ${(i + 1) / xs.length - (1 - ((i + 1) / xs.length))})`; 
+        ctx.strokeStyle = `hsla(0, 0%, 100%, ${(i + 1) / xs.length - (1 - ((i + 1) / xs.length)) + .3})`; 
         ctx.arc(x, (height/2) + y, 1, 0, 6.28);
         ctx.stroke();
       });
@@ -82,8 +110,8 @@ const Plot = (props:IPlot)=> {
         canvas.height = height = dimensions.height * 2;
         break;
     }
-
-    radiansPerPx = (Math.PI * 4) / width;
+    
+    radiansPerPx = Math.PI * 4 / width;
 
     // Beginning time
     let elapsed = 0;
@@ -99,7 +127,6 @@ const Plot = (props:IPlot)=> {
         elapsed = timestamp;
         ctx.clearRect(0, 0, width, height);
         // Draw!
-        //plotBackground(ctx);
         offset = plotCurve(ctx, offset + 1);
       }
     }

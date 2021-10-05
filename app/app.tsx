@@ -1,58 +1,61 @@
 import React, { useEffect, useState } from 'react';
 import { render } from 'react-dom';
+
+import * as UI from './ui/Types.js';
+import { Literal, LiteralOf, Aggregate, AggregateOf, Op } from './domain/Types.js';
+
 import { Crest as compiler } from 'crest-compiler';
-import { Literal, LiteralOf, Aggregate, AggregateOf, Id, Op } from './domain.js';
-import * as Service from './service.js';
-import { Plot } from './plot.jsx'
-import * as UI from './ui.jsx'
+import { Service, IWaveFn } from './service.js';
 
-let service = new Service.Service(compiler);
+import { Slots } from './ui/Slots.js';
+import { Plot } from './ui/Plot.js';
 
-// UI specific types
-type Empty = {
-  kind: "empty"
-}
+let service = new Service(compiler);
 
-const Empty = () => {
-  return { kind: "empty" } as Empty
-}
-
-// Domain + UI types
-type Slot = Literal | Aggregate | Empty
-
-/**
- * Composition root
- */
 const App = ({service}) => {
-  // Desc of a wave
-  let state = new Map<Id,Slot>([
-    [ 1, Empty() ],
-    [ 2, Empty() ],
-    [ 3, Empty() ],
-    [ 4, Empty() ],
-    [ 5, Empty() ],
-    [ 6, Empty() ],
-    [ 7, Empty() ]
+
+  let state = new Map<UI.Id,UI.Slot>([
+    [ 1, UI.EmptyOf() ],
+    [ 2, UI.EmptyOf() ],
+    [ 3, UI.EmptyOf() ],
+    [ 4, UI.EmptyOf() ],
+    [ 5, UI.EmptyOf() ],
+    [ 6, UI.EmptyOf() ],
+    [ 7, UI.EmptyOf() ]
   ]);
-  let [ desc, setDesc ] = useState<Map<Id,Slot>>(state);
-  // `exprFn` is the resulting function compiled from our `desc` expressions
-  let [ exprFn, setExprFn ] = useState({fn:(x:number) => [0]});
+
+  let [ desc, setDesc ] = useState<Map<UI.Id,UI.Slot>>(state);
+  let [ exprFn, setExprFn ] = useState({ fn: (x:number) => [0] });
 
   //----------------------
   //--- Event handlers ---
   //----------------------
 
-  const handleLiteralChange = (idx:Id,value:string) => {
+  const handleLiteralChange = (idx:UI.Id) => (value:string) => {
     setDesc(new Map([
       ...desc,
       [ idx, LiteralOf(value) ]
     ]));
   }
 
-  const handleMergeChange = (id:Id) => (op:Op, expressions:[ Id, Id ]) => {
+  const handleAggregateChange = (id:UI.Id) => (expressions:[ UI.Id, UI.Id ], op:Op ) => {
     setDesc(new Map([
       ...desc,
       [ id, AggregateOf(op,expressions) ]
+    ]))
+  }
+
+  const addAggregateExpression = (id:UI.Id, expressionsIds:[ UI.Id,UI.Id ]) => () => {
+    setDesc(new Map([
+      ...desc,
+      [ id, AggregateOf(Op.ADD, expressionsIds) ]
+    ]))
+  }
+
+  const addLiteralExpression = (id:UI.Id) => () => {
+    setDesc(new Map([
+      ...desc,
+      [ id, LiteralOf("") ]
     ]))
   }
 
@@ -66,65 +69,33 @@ const App = ({service}) => {
                   case "aggregate":
                     return acc.set(k, { kind: "aggregate", expressions: slot.expressions, op: Op.MIN })
                 }
-              }, new Map<Id,Literal | Aggregate>());
+              }, new Map<UI.Id,Literal | Aggregate>());
 
     // Create our final plot-able function
-    let fn = service.create(d) as Service.IWaveFn;
+    let fn = service.create(d) as IWaveFn;
     // Update the state so <Plot/> is aware
     setExprFn({fn:fn});
   }, [desc])
-  
-  const addMergeExpression = (id:Id, expressionsIds:[ Id,Id ]) => {
-    setDesc(new Map([
-      ...desc,
-      [ id, AggregateOf(Op.ADD, expressionsIds) ]
-    ]))
+
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
   }
 
-  const addLiteralExpression = (id:Id) => {
-    // Get our next index
-    //let { value, done } = id.next()
-    // While we're not done (we have indices remaining), create the expression
-    //if (!done)
-      setDesc(new Map([
-        ...desc,
-        [ id, LiteralOf("") ]
-      ]))
-  }
-
-  const slots = () => {}
-
-  // Mmmm maybe this could all go in a <Slot/>
-  return (
-    <>
-      <div id="expressions" style={{display:'flex', alignItems:'center'}}>
-        {[...desc.entries()].map(([k,v]) => {
-          switch (v.kind){
-            case "empty":
-              if ([...desc.values()].filter(expr => expr.kind !== "empty").length >= 2){
-                return (
-                  <div key={k}>
-                    <button onClick={e => addMergeExpression(k,[ (k-2),(k-1) ])}>Add Aggregate Expression</button>
-                    <button onClick={e => addLiteralExpression(k)}>Add Expression</button>
-                  </div>);
-              } else {
-                return <button key={k} onClick={e => addLiteralExpression(k)}>Add Expression</button>
-              }
-              break;
-            case "literal":
-              // return <UI.Literal />
-              return <UI.Literal key={k} value={v.expr} onChange={e => handleLiteralChange(k, e.target.value)} />
-              break;
-            case "aggregate":
-              // return <UI.Aggregate />
-              return <UI.Aggregate expressions={v.expressions} slots={[...desc.keys()]} op={v.op} onChange={handleMergeChange(k)} key={k} />
-              break;
-          }
-        })}
-      </div>
-      <Plot fn={exprFn.fn} dimensions={"auto"} />
-    </>
-  );
+  return  <div id="expressions"
+               style={{display:'flex', alignItems:'center'}}>
+            <Slots desc={desc}
+                   addLiteral={addLiteralExpression}
+                   onLiteralChange={handleLiteralChange}
+                   addAggregate={addAggregateExpression}
+                   onAggregateChange={handleAggregateChange}/>
+            <Plot fn={exprFn.fn} dimensions={"auto"} />
+          </div>
 }
 
 render(<App service={service} />, document.getElementById('root'));

@@ -101,3 +101,11 @@ So now there's a list of "descriptors". These are either an Expression (text rep
 This is impacted by my latest idea of constraining the expressions to a limited number (8, say). Having wrestled with creating an easily navigable UI for an unlimited number of expressions, perhaps the informed idea is to pull back and go smaller.
 
 Should the UI layer not use types from the domain? In other words, should the only use of a lower layer be via a port? We should not utilise domain types in the UI layer but they should be parsed from more primitive types...?
+
+### React Context
+
+Initially, state was within `<App/>`. All existing components were feeding directly (with reference) off of that, and UI was not split out into components. As UI concepts such as `Slot`, `Literal`, `Aggregate` and `Empty` emerged, components were now moved to their own files. The question was, how then do we a facilitate the components affecting the state? They were divorced from their particular `onChange` functions which wrapped the state. Do we "prop-drill" these functions into the components or do we relocate the functions and pass through the state?
+
+The first thing I'm trying is `Context`. I will use `Context` to pass the state and update state function to the relevant components whilst relocating the particular `onChange` functions to their associated files.
+
+I don't like the idea of having to import into each component, the context created in `<App/>`. This relationship seems backward; should not the component have no idea of the higher component it's involved with?
