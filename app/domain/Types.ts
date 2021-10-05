@@ -34,5 +34,10 @@ const LiteralOf = (value:string):Literal => {
 }
 
 export {
-  Id, Literal, LiteralOf, Aggregate, AggregateOf, Op,
+  Id,
+  Literal,
+  LiteralOf,
+  Aggregate,
+  AggregateOf,
+  Op
 }

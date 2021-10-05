@@ -49,13 +49,16 @@ class Service implements CreateWaveUseCase {
     }
   }
 
+  // assemble?
   create(desc:Desc): IWaveFn {
   
     let r = [...desc.entries()].reduce((acc,[ k,v ]) => {
-      switch (v.kind){
+      switch (v.kind) {
+        
         case "literal":
           acc.set(k, this.compile(v.expr));
           break;
+        
         case "aggregate":
           let [ a,b ] = v.expressions.map(k => acc.get(k));
           acc.set( k, this.aggregate(a,b,v.op) );

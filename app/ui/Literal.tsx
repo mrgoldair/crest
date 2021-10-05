@@ -1,3 +1,9 @@
+/**
+ * ExprInput is a wrapper around <input />
+ * 
+ * It expects a function, onChange, to accept a string
+ */
+
 import React from "react";
 import { Literal } from '../domain/Types.js';
 

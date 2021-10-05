@@ -7,7 +7,7 @@
  
 
 import React, { useRef, useEffect } from 'react';
-import { IWaveFn } from '../service';
+import { IWaveFn } from '../Service';
 
 type Specified = {
   width:number

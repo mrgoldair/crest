@@ -15,7 +15,8 @@ type Props = {
 
 const Slots = ({ desc, addLiteral, addAggregate, onAggregateChange, onLiteralChange }:Props) => {
   
-  return (<div>
+  return (<div id="expressions"
+               style={{display:'flex', alignItems:'center'}}>
     {...[...desc.entries()].map(([ id, slot ]) => {
 
       switch (slot.kind) {

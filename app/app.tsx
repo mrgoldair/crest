@@ -2,30 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { render } from 'react-dom';
 
 import * as UI from './ui/Types.js';
-import { Literal, LiteralOf, Aggregate, AggregateOf, Op } from './domain/Types.js';
+import { Literal, LiteralOf, Aggregate, AggregateOf, Op, Id } from './domain/Types.js';
 
 import { Crest as compiler } from 'crest-compiler';
-import { Service, IWaveFn } from './service.js';
+import { Service, IWaveFn } from './Service.js';
 
 import { Slots } from './ui/Slots.js';
 import { Plot } from './ui/Plot.js';
 
 let service = new Service(compiler);
 
-const App = ({service}) => {
+const App = ({ service }) => {
 
   let state = new Map<UI.Id,UI.Slot>([
     [ 1, UI.EmptyOf() ],
     [ 2, UI.EmptyOf() ],
     [ 3, UI.EmptyOf() ],
     [ 4, UI.EmptyOf() ],
-    [ 5, UI.EmptyOf() ],
-    [ 6, UI.EmptyOf() ],
-    [ 7, UI.EmptyOf() ]
+    [ 5, UI.EmptyOf() ]
   ]);
 
   let [ desc, setDesc ] = useState<Map<UI.Id,UI.Slot>>(state);
   let [ exprFn, setExprFn ] = useState({ fn: (x:number) => [0] });
+
+  let defaultExpr = "cos(x) * 5";
 
   //----------------------
   //--- Event handlers ---
@@ -45,7 +45,7 @@ const App = ({service}) => {
     ]))
   }
 
-  const addAggregateExpression = (id:UI.Id, expressionsIds:[ UI.Id,UI.Id ]) => () => {
+  const addAggregateExpression = (id:UI.Id, expressionsIds:[ UI.Id, UI.Id ]) => () => {
     setDesc(new Map([
       ...desc,
       [ id, AggregateOf(Op.ADD, expressionsIds) ]
@@ -55,7 +55,7 @@ const App = ({service}) => {
   const addLiteralExpression = (id:UI.Id) => () => {
     setDesc(new Map([
       ...desc,
-      [ id, LiteralOf("") ]
+      [ id, LiteralOf(defaultExpr) ]
     ]))
   }
 
@@ -77,25 +77,14 @@ const App = ({service}) => {
     setExprFn({fn:fn});
   }, [desc])
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2
-      }
-    }
-  }
-
-  return  <div id="expressions"
-               style={{display:'flex', alignItems:'center'}}>
+  return  <>
             <Slots desc={desc}
                    addLiteral={addLiteralExpression}
                    onLiteralChange={handleLiteralChange}
                    addAggregate={addAggregateExpression}
                    onAggregateChange={handleAggregateChange}/>
             <Plot fn={exprFn.fn} dimensions={"auto"} />
-          </div>
+          </>
 }
 
 render(<App service={service} />, document.getElementById('root'));
