@@ -1,3 +1,29 @@
+/**
+ * The entry point of the app. This acts as the composition root.
+ * 
+ * Set's up the state and state-updating functions which are passed
+ * down (prop-drilled) to <Literal> and <Aggregate> components via their
+ * onChange functions.
+ * 
+ * The state is conceptually a map of "slots", a slot being either a literal expression
+ * or an aggregate (see Literal.tsx and Aggregate.tsx) with the key being a preset Id.
+ * 
+ * Creation and change functions are created in this module. Because we have access to
+ * state (and don't want to pass it around) and we want to keep the knowledge of how to update
+ * it concentrated here, the functions are partially applied with the ids which means we can
+ * simply pass the resulting functions down to their relevant components via their onChange and
+ * updates happen automatically.
+ * 
+ * When a change happens:
+ * a) if the change is from a <Literal> el, the state gets updated with the value of
+ * the input (the expression text), the resulting change in state kicks off a new compile
+ * via the service and a new "plot" function is created.
+ * 
+ * b) if the change is from an <Aggregate> el, the state gets updated with the value of
+ * the new expression id(s) chosen, or operation selected; the resulting change in state kicks off a new compile
+ * via the service and a new "plot" function is created.
+ */
+
 import React, { useEffect, useState } from 'react';
 import { render } from 'react-dom';
 
@@ -60,19 +86,19 @@ const App = ({ service }) => {
   }
 
   useEffect(() => {
-    let d = [...desc.entries()]
-              .filter(([k,slot]) => slot.kind !== "empty")
-              .reduce((acc,[k,slot]) => {
-                switch (slot.kind){
-                  case "literal":
-                    return acc.set(k, { kind: "literal", expr: slot.expr })
-                  case "aggregate":
-                    return acc.set(k, { kind: "aggregate", expressions: slot.expressions, op: Op.MIN })
-                }
-              }, new Map<UI.Id,Literal | Aggregate>());
+    let emptiesRemoved = [...desc.entries()]
+                            .filter(([k,slot]) => slot.kind !== "empty")
+                            .reduce((acc,[k,slot]) => {
+                              switch (slot.kind){
+                                case "literal":
+                                  return acc.set(k, { kind: "literal", expr: slot.expr })
+                                case "aggregate":
+                                  return acc.set(k, { kind: "aggregate", expressions: slot.expressions, op: Op.MIN })
+                              }
+                            }, new Map<UI.Id,Literal | Aggregate>());
 
     // Create our final plot-able function
-    let fn = service.create(d) as IWaveFn;
+    let fn = service.create(emptiesRemoved) as IWaveFn;
     // Update the state so <Plot/> is aware
     setExprFn({fn:fn});
   }, [desc])
