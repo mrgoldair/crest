@@ -24,12 +24,21 @@ const Slots = ({ desc, addLiteral, addAggregate, onAggregateChange, onLiteralCha
         case "empty":
           if ([...desc.values()].filter(expr => expr.kind !== "empty").length >= 2){
             return <UI.Slot key={id} id={id}>
-                     <button onClick={addAggregate(id,[ (id-2),(id-1) ])}>Add Aggregate Expression</button>
-                     <button onClick={addLiteral(id)}>Add Expression</button>
+                     <button className="button" onClick={addAggregate(id,[ (id-2),(id-1) ])}>
+                       <img className="button-icon" src="/assets/icon-mix.png" />
+                       MIX
+                      </button>
+                     <button className="button" onClick={addLiteral(id)}>
+                       <img className="button-icon" src="/assets/icon-expr.png" />
+                       EXPR
+                     </button>
                    </UI.Slot>
           } else {
             return <UI.Slot key={id} id={id}>
-                      <button onClick={addLiteral(id)}>Add Expression</button>
+                      <button className="button" onClick={addLiteral(id)}>
+                        <img className="button-icon "src="/assets/icon-expr.png" />
+                        EXPR
+                      </button>
                    </UI.Slot>
           }
           break;

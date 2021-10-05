@@ -8,8 +8,10 @@ type Props = {
 
 const Slot = (props:Props) => {
   return <div className="slot" key={props.id}>
-            <label htmlFor="">SLOT_{props.id}</label>
-            {props.children}
+            <label className="slot-label" htmlFor="">SLOT_0{props.id}</label>
+            <div className="slot-layout">
+              {props.children}
+            </div>
          </div>;
 }
 
