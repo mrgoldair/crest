@@ -77,7 +77,7 @@ const Plot = (props:IPlot)=> {
 
   // Line Plot
   const plotCurve = (ctx, offset = 0) => {
-    for (let x = 0; x <= width; x = x + 40) {
+    for (let x = 0; x <= width; x = x + 15) {
       // Produce a y val for each expression -> [ y, y, y ]
       let ys = fn((x + (offset * 40)) * radiansPerPx);
       // Push this up to the calling code ---v
@@ -127,7 +127,7 @@ const Plot = (props:IPlot)=> {
         elapsed = timestamp;
         ctx.clearRect(0, 0, width, height);
         // Draw!
-        offset = plotCurve(ctx, offset + 1);
+        offset = plotCurve(ctx, offset + .25);
       }
     }
     // Start our render loop

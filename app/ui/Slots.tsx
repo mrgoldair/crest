@@ -2,6 +2,8 @@ import React from "react";
 import { Id, Slot } from "./Types";
 import { Op } from "../domain/Types";
 import * as UI from './Slot';
+import { AddMix } from './AddMix';
+import { AddExpr } from './AddExpr';
 import { Literal } from './Literal';
 import { Aggregate } from './Aggregate';
 
@@ -24,21 +26,12 @@ const Slots = ({ desc, addLiteral, addAggregate, onAggregateChange, onLiteralCha
         case "empty":
           if ([...desc.values()].filter(expr => expr.kind !== "empty").length >= 2){
             return <UI.Slot key={id} id={id}>
-                     <button className="button" onClick={addAggregate(id,[ (id-2),(id-1) ])}>
-                       <img className="button-icon" src="/assets/icon-mix.png" />
-                       MIX
-                      </button>
-                     <button className="button" onClick={addLiteral(id)}>
-                       <img className="button-icon" src="/assets/icon-expr.png" />
-                       EXPR
-                     </button>
+                     <AddMix onClick={addAggregate(id,[ (id-2),(id-1) ])} />
+                     <AddExpr onClick={addLiteral(id)} />
                    </UI.Slot>
           } else {
             return <UI.Slot key={id} id={id}>
-                      <button className="button" onClick={addLiteral(id)}>
-                        <img className="button-icon "src="/assets/icon-expr.png" />
-                        EXPR
-                      </button>
+                     <AddExpr onClick={addLiteral(id)} />
                    </UI.Slot>
           }
           break;
