@@ -1,18 +1,29 @@
 import React from "react";
 import { Id, Slot } from './Types.js';
 
+import { motion } from 'framer-motion';
+
 type Props = {
   id:Id
   children: JSX.Element[] | JSX.Element
 }
 
+const variants = {
+  visible: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 10 }
+}
+
 const Slot = (props:Props) => {
-  return <div className="slot" key={props.id}>
-            <label className="slot-label" htmlFor="">SLOT_0{props.id}</label>
-            <div className="slot-layout">
+  return <motion.div className="slot"
+                     key={props.id}>
+            {/*<label className="slot-label" htmlFor="">SLOT_0{props.id}</label> */}
+            <motion.div className="slot-layout"
+                        initial="hidden"
+                        animate="visible"
+                        variants={variants}>
               {props.children}
-            </div>
-         </div>;
+            </motion.div>
+         </motion.div>;
 }
 
 export { Slot };

@@ -11,7 +11,7 @@
     }
 
     body {
-      background-color: #1C2231;
+      /*background-color: #1C2231;*/
       padding: 0;
       margin: 0;
       font-family: 'IBM Plex Mono';
@@ -45,45 +45,10 @@
       font-weight: 500;
     }
 
-    .button {
-      background:none; /* hsla(0, 0%, 100%, .02); */
-      color: white;
-      padding: 9px 0;
-      letter-spacing: 0.2em;
-      font-size: 0.7rem;
-      border:none; /*2px solid hsla(0, 0%, 100%, .02);*/
-      box-sizing: border-box;
-    }
-
-    .button:hover {
-      background:hsla(0, 0%, 100%, .04);
-      cursor: pointer;
-    }
-
-    .button-icon {
-      width: 12px;
-      margin-right: 10px;
-      filter: drop-shadow(0 0 1px #fff);
-    }
-
-    .slot {
-      display: flex;
-      flex-direction: column;
-      width: 80%;
-    }
-
-      .slot-label {}
-      .slot-layout {
-        display: flex;
-      }
-
-      .slot-layout > * {
-        flex: 1 1;
-      }
-
+    /* Our three base UI types */
     #root {
       /* shape */
-      width: 350px;
+      width: 370px;
       border-radius: 11px;
       /* position */
       margin: 8% auto;
@@ -94,17 +59,77 @@
       box-shadow: 0 40px 65px -6px hsla(0, 0%, 0%, 0.32);
     }
 
-    #expressions {
-      width: 30%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-    }
-
     #plot {
-      width: 70%;
       padding: 2px;
     }
+
+    #expressions {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: space-evenly;
+      padding: 40px;
+    }
+
+    .slot {
+      display: flex;
+      flex-direction: column;
+
+      width: 100%;
+      border: 1px solid hsla(0, 0%, 0%, .06);
+    }
+
+      .slot-label {
+
+      }
+
+      .slot-layout {
+        display: flex;
+      }
+
+      .slot-layout > * {
+        flex: 1 1;
+      }
+
+    .button {
+      /* Shape */
+      box-sizing: border-box;
+      padding: 30px 0;
+      border: none; /*2px solid hsla(0, 0%, 100%, .02);*/
+
+      background: none; /* hsla(0, 0%, 100%, .02); */
+      color: black;
+      letter-spacing: .1em;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    .button:hover {
+      background:hsla(0, 0%, 100%, .04);
+      cursor: pointer;
+    }
+
+    .button-icon {
+      width: 12px;
+      margin-right: 10px;
+      filter: drop-shadow(0 0 1px hsla(0, 0%, 0%, .4));
+    }
+
+    .input-expr {
+      position: relative;
+    }
+      .input-expr__icon {
+        position: absolute;
+        top: 14px;
+        left: -5px;
+      }
+
+      .input-expr__control {
+        width: 100%;
+        background-color: hsla(0, 0%, 85%, .06);
+        /*border: 1px solid hsl(0, 0%, 94%);*/
+        color: black;
+      }
   </style>
 </head>
 <body>

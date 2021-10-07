@@ -1,7 +1,9 @@
 import React from "react";
+
 import { Id, Slot } from "./Types";
 import { Op } from "../domain/Types";
 import * as UI from './Slot';
+
 import { AddMix } from './AddMix';
 import { AddExpr } from './AddExpr';
 import { Literal } from './Literal';
@@ -17,8 +19,7 @@ type Props = {
 
 const Slots = ({ desc, addLiteral, addAggregate, onAggregateChange, onLiteralChange }:Props) => {
   
-  return (<div id="expressions"
-               style={{display:'flex', alignItems:'center'}}>
+  return (<div id="expressions">
     {...[...desc.entries()].map(([ id, slot ]) => {
 
       switch (slot.kind) {
@@ -37,11 +38,10 @@ const Slots = ({ desc, addLiteral, addAggregate, onAggregateChange, onLiteralCha
           break;
 
         case "literal":
-          return (
-            <UI.Slot key={id} id={id}>
-              <Literal value={slot.expr}
-                       onChange={onLiteralChange(id)}/>
-            </UI.Slot>)
+          return <UI.Slot id={id}>
+                   <Literal value={slot.expr}
+                            onChange={onLiteralChange(id)} />
+                 </UI.Slot>
           break;
 
         case "aggregate":
