@@ -41,7 +41,9 @@ let service = new Service(compiler);
 const App = ({ service }) => {
 
   let state = new Map<UI.Id,UI.Slot>([
-    [ 1, UI.EmptyOf() ]
+    [ 1, UI.EmptyOf() ],
+    [ 2, UI.EmptyOf() ],
+    [ 3, UI.EmptyOf() ]
   ]);
 
   let [ desc, setDesc ] = useState<Map<UI.Id,UI.Slot>>(state);

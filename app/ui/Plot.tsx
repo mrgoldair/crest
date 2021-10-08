@@ -83,7 +83,7 @@ const Plot = (props:IPlot)=> {
       // Push this up to the calling code ---v
       ys.map((y,i,xs) => {
         ctx.beginPath();
-        ctx.strokeStyle = `hsla(0, 0%, 100%, ${(i + 1) / xs.length - (1 - ((i + 1) / xs.length)) + .3})`; 
+        ctx.strokeStyle = `hsla(0, 0%, 0%, ${ .3 + (i * ( 1 - .3 / (xs.length - 1))) })`; 
         ctx.arc(x, (height/2) + y, 1, 0, 6.28);
         ctx.stroke();
       });

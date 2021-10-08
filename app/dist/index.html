@@ -28,7 +28,7 @@
 
     input {
       display: block;
-      padding: 9px 10px;
+      height: 42px;
       outline: none;
       border: none;
       border-bottom-color: currentcolor;
@@ -55,12 +55,15 @@
       /* layout */
       display: flex;
       flex-direction: column;
-
+      overflow: hidden;
       box-shadow: 0 40px 65px -6px hsla(0, 0%, 0%, 0.32);
     }
 
     #plot {
       padding: 2px;
+      height: 190px;
+      background-color: hsl(0,0%,96.5%);
+      border-bottom: 1px solid hsl(0,0%,94%);
     }
 
     #expressions {
@@ -79,9 +82,9 @@
       border: 1px solid hsla(0, 0%, 0%, .06);
     }
 
-      .slot-label {
-
-      }
+    .slot + .slot {
+      margin-top: 10px;
+    }
 
       .slot-layout {
         display: flex;
@@ -93,8 +96,9 @@
 
     .button {
       /* Shape */
+      height: 42px;
       box-sizing: border-box;
-      padding: 30px 0;
+      padding: 12px 0;
       border: none; /*2px solid hsla(0, 0%, 100%, .02);*/
 
       background: none; /* hsla(0, 0%, 100%, .02); */
@@ -120,8 +124,8 @@
     }
       .input-expr__icon {
         position: absolute;
-        top: 14px;
-        left: -5px;
+        top: 17px;
+        left: -6px;
       }
 
       .input-expr__control {
