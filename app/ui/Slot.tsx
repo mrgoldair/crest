@@ -16,7 +16,6 @@ const variants = {
 const Slot = (props:Props) => {
   return <motion.div className="slot"
                      key={props.id}>
-            {/*<label className="slot-label" htmlFor="">SLOT_0{props.id}</label> */}
             <motion.div className="slot-layout"
                         initial="hidden"
                         animate="visible"

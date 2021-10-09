@@ -1,35 +1,36 @@
 # CREST
-### A DSL for writing waves
+## A DSL for writing waves
 
-## *BUILD NOTES* /*ISSUES* / *TODO*
+
+
+
+
+##### Build Notes / Issues / Todo
+
+- Show only topmost wave
 - ~~Scroll the waves right to left~~
-- Layer multiple waves
-  - The functional design of unlimited expressions is posing a problem with UI design; how to show and navigate each and every expression and add new ones? Perhaps the difficulty is informing me that the design should be constrained to a limited number of expression *"slots"* .
-  - Maybe constrain the number of expressions?
-  - Delete expressions
-  - Colour waves for easier identification
-  - Drag 'n' drop to move expressions around?
-  - Each successive pair can be combined via an operation e.g. addition, subtraction or even min/max
-  - Where should the responsabilities lay? Should `Canvas` know about expressions? Should the expressions know how they're being rendered? If each expression constitutes a curve i.e. there's no accumulation function between curve expressions, since the canvas is rendering curves should it know about this technicality?
-  - Maybe the structure should be a map instead of an array and the ordering explicit instead of implicitly defined by the array?
-  - If the _______ is for rendering curve functions should it know about "the innards" of them?
-  - At the moment the callee of `compiler` has to convert the returned "js" into a function, but perhaps this would make more sense being _in_ the compiler itself? When will we want a mere string from a compiler, huh?
-  - Invert dependencies
-    - **`Application`** 
-      - exposes the primary port (used-by) and becomes the adapter
-      - exposes the secondary (driven) port which is used by **`Application`**
-    - **`Compiler`** is the adapter of the secondary port exposed by **`Application`**
-    - **`UI(React)`** uses **`Application`** via the port/interface (primary/driven) **`Application`** exposes
+- ~~Layer multiple waves~~
+- Delete expressions
+- The functional design of unlimited expressions is posing a problem with UI design; how to show and navigate each and every expression and add new ones? Perhaps the difficulty is informing me that the design should be constrained to a limited number of expression *"slots"* .
+  - Slots implemented
+- ~~Colour waves for easier identification~~
+- ~~Each successive pair can be combined via an operation e.g. addition, subtraction or even min/max~~
+- Where should the responsabilities lay? Should `Canvas` know about expressions? Should the expressions know how they're being rendered? If each expression constitutes a curve i.e. there's no accumulation function between curve expressions, since the canvas is rendering curves should it know about this technicality?
+- Maybe the structure should be a map instead of an array and the ordering explicit instead of implicitly defined by the array?
+  - State is now implemented as a map. This also was to simplify the requirement from unlimited slots to just a few.
+- At the moment the callee of `compiler` has to convert the returned "js" into a function, but perhaps this would make more sense being _in_ the compiler itself? When will we want a mere string from a compiler, huh?
+- Invert dependencies
+  - **`Application`** 
+    - exposes the primary port (used-by) and becomes the adapter
+    - exposes the secondary (driven) port which is used by **`Application`**
+- **`Compiler`** is the adapter of the secondary port exposed by **`Application`**
+- **`UI(React)`** uses **`Application`** via the port/interface (primary/driven) **`Application`** exposes
 
 > **Incoming ports** will be the interface(s) that your application **implements**. **Outgoing ports** are the interfaces that your application **depends on**. "Incoming" and "outgoing" are the terms that our team adopted. "Driving port" and "driven port" is the terminology you may find in other literature.
 >
 > That leaves us with adapters. Just like ports, there are two kinds of adapters: incoming, which are represented in blue; and outgoing, which are represented in purple. The distinction here is incoming adapters **depend on the incoming port**, and outgoing adapters **implement the outgoing port**.
 >
 > [A color-coded guide to ports and adapters]: https://8thlight.com/blog/damon-kelley/2021/05/18/a-color-coded-guide-to-ports-and-adapters.html
-
-- Give UI controls for speed n such
-- Debounce expression input
-- Start the wave in the middle, flowing left like a sparkline
 
 ## Lexing & Tokens
 Converts the string of a source file it into the tokens of our DSL. This is our "lexical grammer" – what arrangement of characters create allowable tokens. `cos`, `sin` and `tan`.
@@ -102,10 +103,10 @@ This is impacted by my latest idea of constraining the expressions to a limited 
 
 Should the UI layer not use types from the domain? In other words, should the only use of a lower layer be via a port? We should not utilise domain types in the UI layer but they should be parsed from more primitive types...?
 
-### React Context
+​	I didn't have a great solution to this. Domain types inform the range of values the UI can express. Though I felt like I had 	to recreate domain concepts as UI-specific components. Something to think about more.
 
-Initially, state was within `<App/>`. All existing components were feeding directly (with reference) off of that, and UI was not split out into components. As UI concepts such as `Slot`, `Literal`, `Aggregate` and `Empty` emerged, components were now moved to their own files. The question was, how then do we a facilitate the components affecting the state? They were divorced from their particular `onChange` functions which wrapped the state. Do we "prop-drill" these functions into the components or do we relocate the functions and pass through the state?
+The state ended up being a `Map` held within `App`. The functions for manipulating the state were wired-up in `App` and passed down to `Slots` which knew how to handle the various types for the state values; when the slot state was `Empty` it knew to create buttons allowing the creation of a `Expr | Aggregate` etc. This freed up the lower components from knowing anything about the state or why they were being used.
 
-The first thing I'm trying is `Context`. I will use `Context` to pass the state and update state function to the relevant components whilst relocating the particular `onChange` functions to their associated files.
+​	So, like stratified design for code, in the UI the lower level building blocks are more literal while the composites and "higher up" components are more abstract. The literals *generally* change less while the abstractions *generally* change more. Therefore since a literal like an input deals with text strings it should not know what our app state is or how to change it, only how to relay changes to its own state - that of a string. We build more abstract components on top/around these literal ones that may know about state and how to change it, but they don't deal in strings. The topmost element `App` , being the most general/abstract of them all. 
 
-I don't like the idea of having to import into each component, the context created in `<App/>`. This relationship seems backward; should not the component have no idea of the higher component it's involved with?
+​	Therefore if we find a component working with abstractions outside it's layer of design (either above or below) e.g. a `Slot` working with strings as opposed to a more abstract representation of our state then we can be curious as to whether that will work effectively. The App also does not deal in obtaining the literals for the state but delegates the means to lower components via a function. The function acts as a broker between layers speaking both in strings (the incoming "raw material" as the literal elements that make up our state) and in state (the specific organisation of those literals that makes up the abstraction of our state). The lower level components are given a function which provides inputs in the form that the lower level components speak – string literals – whilst inside, the function operates at the higher level of the state in which it was created.

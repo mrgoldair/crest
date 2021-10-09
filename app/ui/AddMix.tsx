@@ -6,7 +6,7 @@ type Props = {
 
 const AddMix = (props:Props) => {
   return  <button className="button" onClick={props.onClick}>
-            <img className="button-icon" src="/assets/icon-mix.png" />
+            <img className="button-icon" src="/assets/icon-mix.svg" />
             MIX
           </button>
 }

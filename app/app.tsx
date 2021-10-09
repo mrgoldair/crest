@@ -33,8 +33,8 @@ import { Literal, LiteralOf, Aggregate, AggregateOf, Op, Id } from './domain/Typ
 import { Crest as compiler } from 'crest-compiler';
 import { Service, IWaveFn } from './Service.js';
 
-import { Slots } from './ui/Slots.js';
-import { Plot } from './ui/Plot.js';
+import { Slots } from './ui/Slots.jsx';
+import { Plot } from './ui/Plot.jsx';
 
 let service = new Service(compiler);
 

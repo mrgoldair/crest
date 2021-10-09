@@ -27,8 +27,9 @@ const Slots = ({ desc, addLiteral, addAggregate, onAggregateChange, onLiteralCha
         case "empty":
           if ([...desc.values()].filter(expr => expr.kind !== "empty").length >= 2){
             return <UI.Slot key={id} id={id}>
-                     <AddMix onClick={addAggregate(id,[ (id-2),(id-1) ])} />
                      <AddExpr onClick={addLiteral(id)} />
+                     <div className="vertical-bar"></div>
+                     <AddMix onClick={addAggregate(id,[ id, id ])} />
                    </UI.Slot>
           } else {
             return <UI.Slot key={id} id={id}>
