@@ -29,7 +29,7 @@ const Slots = ({ desc, addLiteral, addAggregate, onAggregateChange, onLiteralCha
             return <UI.Slot key={id} id={id}>
                      <AddExpr onClick={addLiteral(id)} />
                      <div className="vertical-bar"></div>
-                     <AddMix onClick={addAggregate(id,[ id, id ])} />
+                     <AddMix onClick={addAggregate(id,[ 1, 1 ])} />
                    </UI.Slot>
           } else {
             return <UI.Slot key={id} id={id}>

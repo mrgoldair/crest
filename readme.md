@@ -11,6 +11,7 @@
 - ~~Scroll the waves right to left~~
 - ~~Layer multiple waves~~
 - Delete expressions
+- Filter slots own Id from aggregate slot id list
 - The functional design of unlimited expressions is posing a problem with UI design; how to show and navigate each and every expression and add new ones? Perhaps the difficulty is informing me that the design should be constrained to a limited number of expression *"slots"* .
   - Slots implemented
 - ~~Colour waves for easier identification~~
