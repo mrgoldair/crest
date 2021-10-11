@@ -51,7 +51,7 @@ const Slots = ({ desc, addLiteral, addAggregate, onAggregateChange, onLiteralCha
                     <Aggregate expressions={slot.expressions}
                                slots={[...desc.keys()].filter(k => k != id)}
                                op={slot.op}
-                               onChange={onAggregateChange}
+                               onChange={onAggregateChange(id)}
                                key={id} />
                  </UI.Slot>
           break;

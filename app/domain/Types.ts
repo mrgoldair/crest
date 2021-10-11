@@ -1,10 +1,10 @@
 type Id = number;
 
 enum Op {
-  MIN,
-  MAX,
-  ADD,
-  SUB
+  MIN = "min",
+  MAX = "max",
+  ADD = "add",
+  SUB = "sub"
 }
 
 type Aggregate = {

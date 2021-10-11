@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 type Props = {
   id:Id
   children: JSX.Element[] | JSX.Element
+  remove?: () => void
 }
 
 const variants = {
@@ -22,6 +23,7 @@ const Slot = (props:Props) => {
                         variants={variants}>
               {props.children}
             </motion.div>
+            { props.remove ? <div onClick={props.remove}>remove</div> : null }
          </motion.div>;
 }
 

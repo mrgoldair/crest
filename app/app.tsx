@@ -83,6 +83,13 @@ const App = ({ service }) => {
     ]))
   }
 
+  const removeExpr = (id:UI.Id) => () => {
+    setDesc(new Map([
+      ...desc,
+      [ id, UI.EmptyOf() ]
+    ]))
+  }
+
   useEffect(() => {
     let emptiesRemoved = [...desc.entries()]
                             .filter(([k,slot]) => slot.kind !== "empty")
@@ -107,7 +114,8 @@ const App = ({ service }) => {
                    addLiteral={addLiteralExpression}
                    onLiteralChange={handleLiteralChange}
                    addAggregate={addAggregateExpression}
-                   onAggregateChange={handleAggregateChange}/>
+                   onAggregateChange={handleAggregateChange}
+                   onRemove={removeExpr}/>
           </>
 }
 
