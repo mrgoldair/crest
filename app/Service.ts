@@ -37,15 +37,22 @@ class Service implements CreateWaveUseCase {
       case Op.MIN:
         return (x:number) => Math.min(a(x),b(x))
         break;
+      
       case Op.MAX:
         return (x:number) => Math.max(a(x),b(x))
         break;
+
       case Op.ADD:
         return (x:number) => a(x) + b(x);
         break;
+
       case Op.SUB:
         return (x:number) => a(x) - b(x);
         break;
+
+      // Our safe zero-case 
+      default:
+        return (x:number) => 0;
     }
   }
 
@@ -58,10 +65,10 @@ class Service implements CreateWaveUseCase {
         case "literal":
           acc.set(k, this.compile(v.expr));
           break;
-        
+
         case "aggregate":
           let [ a,b ] = v.expressions.map(k => acc.get(k));
-          acc.set( k, this.aggregate(a,b,v.op) );
+          acc.set( k, this.aggregate( a, b, v.op ) );
           break;
       }
   

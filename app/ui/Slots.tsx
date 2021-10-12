@@ -14,11 +14,12 @@ type Props = {
   addLiteral: (id:Id) => () => void
   addAggregate: (id:Id, expressionIds:[Id,Id]) => () => void
   onLiteralChange: (id:Id) => (expr:string) => void
-  onAggregateChange: (id:Id) => (expressionIds:[Id,Id], op:Op) => void
+  onAggregateExpr: (id:Id) => (expressionIds:[Id,Id]) => void
+  onAggregateOp: (id:Id) => (op:Op) => void
   onRemove: (id:Id) => () => void
 }
 
-const Slots = ({ desc, addLiteral, addAggregate, onAggregateChange, onLiteralChange, onRemove }:Props) => {
+const Slots = ({ desc, addLiteral, addAggregate, onAggregateExpr, onAggregateOp, onLiteralChange, onRemove }:Props) => {
   
   return (<div id="expressions">
     {...[...desc.entries()].map(([ id, slot ]) => {
@@ -47,12 +48,13 @@ const Slots = ({ desc, addLiteral, addAggregate, onAggregateChange, onLiteralCha
           break;
 
         case "aggregate":
-          return <UI.Slot id={id}>
-                    <Aggregate expressions={slot.expressions}
-                               slots={[...desc.keys()].filter(k => k != id)}
-                               op={slot.op}
-                               onChange={onAggregateChange(id)}
-                               key={id} />
+          return <UI.Slot id={id} key={id}>
+                  <Aggregate expressions={slot.expressions}
+                              slots={[...desc.keys()].filter(k => k != id)}
+                              op={slot.op}
+                              onChangeExpr={onAggregateExpr(id)}
+                              onChangeOp={onAggregateOp(id)}
+                              key={id} />
                  </UI.Slot>
           break;
       }

@@ -62,11 +62,22 @@ const App = ({ service }) => {
     ]));
   }
 
-  const handleAggregateChange = (id:UI.Id) => (expressions:[ UI.Id, UI.Id ], op:Op ) => {
+  const handleAggregateExpr = (id:UI.Id) => (expressions:[ UI.Id, UI.Id ]) => {
+    let expr = desc.get(id) as Aggregate;
+
     setDesc(new Map([
       ...desc,
-      [ id, AggregateOf(op,expressions) ]
-    ]))
+      [ id, AggregateOf( expr.op, expressions ) ]
+    ]));
+  }
+
+  const handleAggregateOp = (id:UI.Id) => (op:Op) => {
+    let expr = desc.get(id) as Aggregate;
+
+    setDesc(new Map([
+      ...desc,
+      [ id, AggregateOf( op, expr.expressions )]
+    ]));
   }
 
   const addAggregateExpression = (id:UI.Id, expressionsIds:[ UI.Id, UI.Id ]) => () => {
@@ -98,7 +109,7 @@ const App = ({ service }) => {
                                 case "literal":
                                   return acc.set(k, { kind: "literal", expr: slot.expr })
                                 case "aggregate":
-                                  return acc.set(k, { kind: "aggregate", expressions: slot.expressions, op: Op.MIN })
+                                  return acc.set(k, { kind: "aggregate", expressions: slot.expressions, op: slot.op })
                               }
                             }, new Map<UI.Id,Literal | Aggregate>());
 
@@ -114,7 +125,8 @@ const App = ({ service }) => {
                    addLiteral={addLiteralExpression}
                    onLiteralChange={handleLiteralChange}
                    addAggregate={addAggregateExpression}
-                   onAggregateChange={handleAggregateChange}
+                   onAggregateExpr={handleAggregateExpr}
+                   onAggregateOp={handleAggregateOp}
                    onRemove={removeExpr}/>
           </>
 }
