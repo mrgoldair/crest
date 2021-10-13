@@ -23,7 +23,10 @@ const Slot = (props:Props) => {
                         variants={variants}>
               {props.children}
             </motion.div>
-            { props.remove ? <div onClick={props.remove}>remove</div> : null }
+            { props.remove ?
+                <motion.div className="slot-remove" initial="hidden"
+                animate="visible" variants={variants} onClick={props.remove}></motion.div>
+                : null }
          </motion.div>;
 }
 

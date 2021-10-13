@@ -69,12 +69,21 @@
     }
 
     .slot {
+      position: relative;
       display: flex;
       flex-direction: column;
-
       width: 100%;
       border: 1px solid hsla(0, 0%, 0%, .06);
     }
+
+      .slot-remove {
+        width: 13px;
+        height: 0px;
+        border-bottom: 3px solid black;
+        position: absolute;
+        top: 19px;
+        right: -7px;
+      }
 
     .slot + .slot {
       margin-top: 10px;
