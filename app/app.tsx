@@ -95,6 +95,22 @@ const App = ({ service }) => {
   }
 
   const removeExpr = (id:UI.Id) => () => {
+    
+    let filterAggregates:(s:UI.Slot) => boolean = s => s.kind == "aggregate";
+
+    // Project the keys used by existing aggregate expressions
+    let aggregateKeys = [...desc.values()]
+                  .filter(filterAggregates)
+                  .flatMap(slot => (slot as Aggregate).expressions)
+
+    // Remove duplicates
+    let keySet = new Set( aggregateKeys );
+
+    // The id of the requested expr to remove is in use by
+    // an aggregate. We can't remove it so for now just return
+    if (keySet.has(id))
+      return
+
     setDesc(new Map([
       ...desc,
       [ id, UI.EmptyOf() ]
