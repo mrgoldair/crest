@@ -42,7 +42,7 @@ const Aggregate = ({ slots, expressions, op, onChangeExpr, onChangeOp }:Props) =
           </select>
 
           {/* SelectOp / OpSelect / Segment */}
-          <Segment selected={op} onChange={onChangeOp}></Segment>
+          <Segment onChange={onChangeOp}></Segment>
 
         </div>
 }

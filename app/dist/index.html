@@ -139,6 +139,8 @@
     }
 
     .aggregate-expr {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       padding: 7px;
     }
 
@@ -169,13 +171,17 @@
 
     .segment {
       display: flex;
+      justify-content: space-around;
+
+      grid-column: 1 / 3;
     }
 
     .segment-option {
       position: relative;
       height: 42px;
-      flex: 1 1;
+      width: 25px;
       margin: 0 2px;
+      cursor: pointer;
     }
 
       .segment-backinginput {
@@ -188,15 +194,10 @@
         margin: 0;
         opacity: 0;
       }
-      
-      .segment-backinginput:checked + .segment-label {
-        background-color: hsl(0, 0%, 0%);
-        color: white;
-      }
 
-      .segment-backinginput:not(:checked):hover + .segment-label {
+      /* .segment-backinginput:not(:checked):hover + .segment-label {
         background-color: hsla(0, 0%, 0%, .05);
-      }
+      } */
 
       .segment-label {
         position: absolute;
@@ -209,6 +210,15 @@
         align-items: center;
         pointer-events: none;
         transition: background-color .3s;
+      }
+
+      .segment-option-signifier {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+
+        border-top: 2px solid;
+        border-bottom: 2px solid;
       }
 
   </style>
