@@ -31,19 +31,19 @@ const Aggregate = ({ slots, expressions, op, onChangeExpr, onChangeOp }:Props) =
 
           <img className="aggregate-expr__icon" src="/assets/icon-mix.svg" />
 
+          <div className="aggregate-expr__label-expr"></div>
           {/* provides a list of available expressions to choose from */}
-          <select value={l} onChange={e => onChangeExpr([ Number(e.target.value), r ])}>
+          <select className="aggregate-expr__left-expr" value={l} onChange={e => onChangeExpr([ Number(e.target.value), r ])}>
             { slots.map((slot:Id) => <option value={slot}  key={slot}>{slot}</option>) }
           </select>
 
           {/* provides a list of available expressions to choose from */}
-          <select value={r} onChange={e => onChangeExpr([ l, Number(e.target.value) ])}>
+          <select className="aggregate-expr__right-expr" value={r} onChange={e => onChangeExpr([ l, Number(e.target.value) ])}>
             { slots.map((slot:Id) => <option value={slot} key={slot}>{slot}</option>) }
           </select>
 
-          {/* SelectOp / OpSelect / Segment */}
-          <Segment onChange={onChangeOp}></Segment>
-
+          <Segment class="aggregate-expr__select-op" onChange={onChangeOp}></Segment>
+          <div className="aggregate-expr__label-op"></div>
         </div>
 }
 

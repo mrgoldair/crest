@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 
 type Props = {
   onChange:(op:Op) => void
+  class: string
 }
 
 const Segment = (props:Props) => {
@@ -23,7 +24,7 @@ const Segment = (props:Props) => {
     setSelected( value );
   }
 
-  return  <div className="segment">
+  return  <div className={`segment ${props.class}`}>
             { Object.entries(Op).map(([k,v]) => {
                 return  <div className="segment-option" key={k} onClick={_ => handleSelected(v)}>
                           <div className="segment-label">{k}</div>

@@ -4,7 +4,11 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>CREST</title>
+
+  <link rel="preload" href="/assets/icon-expr.svg" as="image">
+  <link rel="preload" href="/assets/icon-mix.svg" as="image">
+
   <style>
     * {
       box-sizing: border-box;
@@ -140,9 +144,67 @@
 
     .aggregate-expr {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      padding: 7px;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-rows: 25px auto auto 25px;
+      grid-row-gap: 12px;
+      padding: 15px;
     }
+      .aggregate-expr__label-expr {
+        position: relative;
+        align-self: flex-end;
+
+        grid-column: span 4;
+        border: 1px solid hsla(0, 0%, 0%, .13);
+        border-bottom: none;
+        margin-left: 32px;
+        margin-right: 32px;
+        height: 5px;
+      }
+        .aggregate-expr__label-expr::before {
+          content: "slot_id";
+          color: hsla(0, 0%, 0%, .2);
+          font-size: .5rem;
+          text-transform: uppercase;
+          top: -20px;
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+      .aggregate-expr__label-op {
+        position: relative;
+        align-self: flex-start;
+
+        grid-column: span 4;
+        border: 1px solid hsla(0, 0%, 0%, .13);
+        border-top: none;
+        margin-left: 32px;
+        margin-right: 32px;
+        height: 5px;
+      }
+        .aggregate-expr__label-op::after {
+          content: "operation";
+          color: hsla(0, 0%, 0%, .2);
+          font-size: .5rem;
+          text-transform: uppercase;
+          bottom: -20px;
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+      .aggregate-expr__left-expr {
+        grid-column: 1 / 2;
+      }
+
+      .aggregate-expr__right-expr {
+        grid-column: 4 / 5;
+      }
+
+      .aggregate-expr__select-op {
+        grid-column: 1 / 5;
+        margin: 10px 0;
+      }
 
       .input-expr__icon,
       .aggregate-expr__icon {
@@ -172,32 +234,15 @@
     .segment {
       display: flex;
       justify-content: space-around;
-
-      grid-column: 1 / 3;
     }
 
     .segment-option {
       position: relative;
-      height: 42px;
+      height: 37px;
       width: 25px;
       margin: 0 2px;
       cursor: pointer;
     }
-
-      .segment-backinginput {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: none;
-        margin: 0;
-        opacity: 0;
-      }
-
-      /* .segment-backinginput:not(:checked):hover + .segment-label {
-        background-color: hsla(0, 0%, 0%, .05);
-      } */
 
       .segment-label {
         position: absolute;
