@@ -115,9 +115,11 @@
 
       background: none;
       color: black;
+      opacity: .6;
+
       letter-spacing: .1em;
-      font-size: 0.7rem;
-      font-weight: 500;
+      font-size: .7rem;
+      font-weight: 600;
     }
 
     .button:hover {
@@ -220,16 +222,39 @@
         color: black;
       }
     
-    select {
-      border: 1px solid hsla(0, 0%, 0%, .04);
-      padding: 0 10px;
-      background: hsla(0, 0%, 0%, .03);
-      height: 42px;
+    .select {
+      position: relative;
       box-sizing: border-box;
       font-family: 'IBM Plex Mono';
       font-weight: 500;
       font-size: .75rem;
+      z-index: 1;
     }
+      .select-container {
+        position: absolute;
+      }
+      
+      .select-caret {
+        font-size: 0;
+        margin-top: 5px;
+      }
+
+      .select-option-list {
+        position: absolute;
+        top: 0;
+        background-color: white;
+        width: 100%;
+      }
+
+      .select-selected,
+      .select-option {
+        padding: 10px;
+        background-color: antiquewhite;
+      }
+        .select-selected:hover,
+        .select-option:hover {
+          background-color: aqua;
+        }
 
     .segment {
       display: flex;

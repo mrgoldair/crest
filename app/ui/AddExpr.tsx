@@ -7,7 +7,7 @@ type Props = {
 const AddExpr = (props:Props) => {
   return  <button className="button" onClick={props.onClick}>
             <img className="button-icon" src="/assets/icon-expr.svg" />
-            NEW_EXPR
+            EXPR
           </button>
 }
 
