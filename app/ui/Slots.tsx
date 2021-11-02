@@ -50,7 +50,9 @@ const Slots = ({ desc, addLiteral, addAggregate, onAggregateExpr, onAggregateOp,
         case "aggregate":
           return <UI.Slot id={id} key={id}>
                   <Aggregate expressions={slot.expressions}
-                              slots={[...desc.keys()].filter(k => k != id)}
+                              slots={[...desc.entries()]
+                                        .filter(([ k, v ]) => k !== id && v.kind !== "empty")
+                                        .map(([ k, _ ]) => k)}
                               op={slot.op}
                               onChangeExpr={onAggregateExpr(id)}
                               onChangeOp={onAggregateOp(id)}

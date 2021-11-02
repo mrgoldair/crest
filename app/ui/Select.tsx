@@ -1,12 +1,39 @@
 import React, { useState } from 'react'
-import type { Id } from './Types';
+import { motion } from 'framer-motion';
 
-import caret from './'
+import type { Id } from './Types';
 
 type Props = {
   options: Array<Id>
   selected: Id
   onChange: (selected:Id) => void
+  direction: "right" | "left"
+}
+
+const list = {
+  open: { 
+    opacity: 1,
+    display: "flex",
+    transition: {
+      staggerChildren: 0.05
+    }
+  },
+  closed: { 
+    opacity: 0,
+    display: "none"
+  }
+}
+
+const item = {
+  open: {
+    opacity: 1, x: 0,
+    transition: {
+      ease: "circOut"
+    }
+  },
+  closed: {
+    opacity: 0, x: "-100%"
+  }
 }
 
 const Select = (props:Props) => {
@@ -24,24 +51,27 @@ const Select = (props:Props) => {
   return <div className="select" onClick={_ => setOpen(open => !open)}>
             <div className="select-container">
               <div className="select-selected">
-                {`0${selected}`}
-                <div className="select-caret">
+                <div className="select-selected-value">{`0${selected}`}</div>
+                {/*<div className="select-caret">
                   <svg width="16px" height="5px" viewBox="0 0 16 5" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                    <g id="Re" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="square">
-                        <g id="Group-11" transform="translate(-1.000000, -18.000000)" stroke="#000000" stroke-width="2">
+                    <g stroke="inherit" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="square">
+                        <g transform="translate(-1.000000, -18.000000)" stroke="inherit" stroke-width="2">
                             <polyline id="Line-4" points="2.5 19.5 9 21.5 15.5 19.5"></polyline>
                         </g>
                       </g>
                   </svg>
-                </div>
+                </div>*/}
               </div>
-              <div className="select-option-list" style={open ? {"display":"block"} : {"display":"none"}}>
-                { 
-                  props.options.map(slotId => {
-                    return <div key={slotId} className="select-option" onClick={() => handleOptionSelect(slotId)}>{`0${slotId}`}</div>
-                  })
-                }
-              </div>
+              <motion.div className={`select-option-list ${props.direction}`} variants={list} animate={open ? "open" : "closed"}>
+                { props.options
+                    .filter(o => o !== selected)
+                    .map(slotId => {
+                      return <motion.div key={slotId}
+                                         className="select-option"
+                                         onClick={() => handleOptionSelect(slotId)}
+                                         variants={item}>{`0${slotId}`}</motion.div>
+                  }) }
+              </motion.div>
             </div>
          </div>
 }

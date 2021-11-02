@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CREST</title>
+  <title>Crest</title>
 
   <link rel="preload" href="/assets/icon-expr.svg" as="image">
   <link rel="preload" href="/assets/icon-mix.svg" as="image">
@@ -15,7 +15,6 @@
     }
 
     body {
-      /*background-color: #1C2231;*/
       padding: 0;
       margin: 0;
       font-family: 'IBM Plex Mono';
@@ -145,27 +144,26 @@
     }
 
     .aggregate-expr {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      grid-template-rows: 25px auto auto 25px;
-      grid-row-gap: 12px;
-      padding: 15px;
+      padding: 45px 30px 35px 30px;
     }
       .aggregate-expr__label-expr {
         position: relative;
         align-self: flex-end;
 
         grid-column: span 4;
-        border: 1px solid hsla(0, 0%, 0%, .13);
+        border: 1px solid hsla(0, 0%, 0%, .07);
         border-bottom: none;
-        margin-left: 32px;
-        margin-right: 32px;
+        margin-left: 12px;
+        margin-right: 12px;
         height: 5px;
+        margin-bottom: 5px;
       }
         .aggregate-expr__label-expr::before {
           content: "slot_id";
-          color: hsla(0, 0%, 0%, .2);
+          letter-spacing: .05em;
+          color: hsla(0, 0%, 0%, .13);
           font-size: .5rem;
+          font-weight: 600;
           text-transform: uppercase;
           top: -20px;
           position: absolute;
@@ -178,35 +176,27 @@
         align-self: flex-start;
 
         grid-column: span 4;
-        border: 1px solid hsla(0, 0%, 0%, .13);
-        border-top: none;
-        margin-left: 32px;
-        margin-right: 32px;
+        border: 1px solid hsla(0, 0%, 0%, .07);
+        border-bottom: none;
+        margin-left: 12px;
+        margin-right: 12px;
         height: 5px;
+
+        margin-top: 40px;
+        margin-bottom: 15px;
       }
-        .aggregate-expr__label-op::after {
+        .aggregate-expr__label-op::before {
           content: "operation";
-          color: hsla(0, 0%, 0%, .2);
+          letter-spacing: .05em;
+          color: hsla(0, 0%, 0%, .13);
           font-size: .5rem;
+          font-weight: 600;
           text-transform: uppercase;
-          bottom: -20px;
+          top: -20px;
           position: absolute;
           left: 50%;
           transform: translateX(-50%);
         }
-
-      .aggregate-expr__left-expr {
-        grid-column: 1 / 2;
-      }
-
-      .aggregate-expr__right-expr {
-        grid-column: 4 / 5;
-      }
-
-      .aggregate-expr__select-op {
-        grid-column: 1 / 5;
-        margin: 10px 0;
-      }
 
       .input-expr__icon,
       .aggregate-expr__icon {
@@ -228,37 +218,58 @@
       font-family: 'IBM Plex Mono';
       font-weight: 500;
       font-size: .75rem;
+      letter-spacing: .075em;
       z-index: 1;
     }
+    .select:hover {
+      cursor: pointer;
+    }
       .select-container {
-        position: absolute;
+        display: inline-block;
       }
       
       .select-caret {
         font-size: 0;
-        margin-top: 5px;
+        margin-left: 8px;
+        transform: rotateZ(-90deg);
+        width: 12px;
+        display: flex;
+        stroke: black;
       }
+
+        .select-selected:hover .select-caret {
+          stroke: white;
+        }
 
       .select-option-list {
         position: absolute;
         top: 0;
+        left: 24px;
         background-color: white;
         width: 100%;
+      }
+      .select-option-list.right {
+        left: -91px;
       }
 
       .select-selected,
       .select-option {
-        padding: 10px;
-        background-color: antiquewhite;
+        padding: 4px;
+        display: inline-flex;
       }
         .select-selected:hover,
         .select-option:hover {
-          background-color: aqua;
+          background-color: black;
+          color: white;
         }
+
+      .select-option {
+        margin: 0 2px;
+      }
 
     .segment {
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
     }
 
     .segment-option {
@@ -273,6 +284,7 @@
         position: absolute;
         font-size: .75rem;
         font-weight: 500;
+        letter-spacing: .075em;
         width: 100%;
         height: 100%;
         display: flex;

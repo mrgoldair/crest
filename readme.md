@@ -1,4 +1,4 @@
-# CREST
+# Crest
 ## A DSL for writing waves
 
 
