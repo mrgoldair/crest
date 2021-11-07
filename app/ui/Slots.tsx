@@ -48,7 +48,7 @@ const Slots = ({ desc, addLiteral, addAggregate, onAggregateExpr, onAggregateOp,
           break;
 
         case "aggregate":
-          return <UI.Slot id={id} key={id}>
+          return <UI.Slot id={id} key={id} remove={onRemove(id)}>
                   <Aggregate expressions={slot.expressions}
                               slots={[...desc.entries()]
                                         .filter(([ k, v ]) => k !== id && v.kind !== "empty")

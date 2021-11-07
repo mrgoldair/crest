@@ -76,29 +76,59 @@
       display: flex;
       flex-direction: column;
       width: 100%;
-      border: 1px solid hsla(0, 0%, 0%, .06);
     }
-
-      .slot-remove {
-        width: 13px;
-        height: 0px;
-        border-bottom: 3px solid black;
-        position: absolute;
-        top: 19px;
-        right: -7px;
+      .slot-controls {
+        /* Layout */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* Size */
+        flex: 0 0 13px;
+        /* Position */
+        margin-right: 9px;
       }
 
-    .slot + .slot {
-      margin-top: 10px;
-    }
+        .slot-remove {
+          width: 8px;
+        }
+
+        .slot-id {
+          /* Size */
+          width: 13px;
+          height: 13px;
+          /* Text */
+          color: white;
+          background: black;
+          font-size: 0.5rem;
+          font-weight: 600;
+          text-align: center;
+          line-height: 1.6;
+          /* Position */
+          margin-bottom: 8px;
+          margin-top: 1px;
+        }
+
+      .slot-input {
+        /* Layout */
+        display: flex;
+        justify-content: center;
+        /* Size */
+        flex: 1 1;
+        /* Aesthetics */
+        border: 1px solid hsla(0, 0%, 0%, .06);
+      }
+        .slot-input > * {
+          /* Size */
+          flex: 1 1;
+        }
+
+      .slot + .slot {
+        margin-top: 25px;
+      }
 
       .slot-layout {
         display: flex;
-        align-items: center;
-      }
-
-      .slot-layout > * {
-        flex: 1 1;
+        align-items: stretch;
       }
 
     .button {
@@ -114,7 +144,6 @@
 
       background: none;
       color: black;
-      opacity: .6;
 
       letter-spacing: .1em;
       font-size: .7rem;
@@ -128,7 +157,12 @@
 
     .button-icon {
       margin-right: 10px;
-      filter: drop-shadow(0 0 1px hsla(0, 0%, 0%, .4));
+      width: 23px;
+    }
+
+    .button-icon-trash {
+      margin-right: 10px;
+      width: 14px;
     }
 
     .vertical-bar {
@@ -203,6 +237,7 @@
         position: absolute;
         top: 17px;
         left: -6px;
+        width: 18px;
       }
 
       .input-expr__control {

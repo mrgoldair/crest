@@ -14,7 +14,6 @@ type Props = {
 
 const Literal = ({ value, onChange }:Props) => {
   return <div className="input-expr">
-          <img className="input-expr__icon" src="/assets/icon-expr.svg" />
           <input className="input-expr__control" type="text" value={value} onChange={e => onChange(e.target.value)} />
          </div>
 }

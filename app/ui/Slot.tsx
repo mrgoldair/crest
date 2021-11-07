@@ -21,12 +21,21 @@ const Slot = (props:Props) => {
                         initial="hidden"
                         animate="visible"
                         variants={variants}>
-              {props.children}
+              <div className="slot-controls">
+                <div className="slot-id">{props.id}</div>
+                { props.remove ?
+                    <motion.img className="slot-remove"
+                                src="/assets/icon-trash.png"
+                                initial="hidden"
+                                animate="visible"
+                                variants={variants}
+                                onClick={props.remove}></motion.img>
+                    : null }
+              </div>
+              <div className="slot-input">
+                {props.children}
+              </div>
             </motion.div>
-            { props.remove ?
-                <motion.div className="slot-remove" initial="hidden"
-                animate="visible" variants={variants} onClick={props.remove}></motion.div>
-                : null }
          </motion.div>;
 }
 
