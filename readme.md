@@ -1,4 +1,4 @@
-<img src="screenshot.png"/>
+<img src="_screenshot.png"/>
 
 
 
