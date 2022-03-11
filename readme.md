@@ -1,4 +1,7 @@
-### Crest
+<p align="center" width="100%">
+	<img src="logo.svg" height="275px"/>
+</p>
+Crest is... a tiny DSL for expressing trig waves
 
 
 
@@ -8,13 +11,13 @@
 
 
 
-##### Build Notes / Issues / Todo
+##### Build Notes / Todo / Ramblings
 
-- Show only topmost wave
+- ~~Show only topmost wave~~
 - ~~Scroll the waves right to left~~
 - ~~Layer multiple waves~~
-- Delete expressions
-- Filter slots own Id from aggregate slot id list
+- ~~Delete expressions~~
+- ~~Filter slots own Id from aggregate slot id list~~
 - The functional design of unlimited expressions is posing a problem with UI design; how to show and navigate each and every expression and add new ones? Perhaps the difficulty is informing me that the design should be constrained to a limited number of expression *"slots"* .
   - Slots implemented
 - ~~Colour waves for easier identification~~
@@ -36,13 +39,22 @@
 >
 > [A color-coded guide to ports and adapters]: https://8thlight.com/blog/damon-kelley/2021/05/18/a-color-coded-guide-to-ports-and-adapters.html
 
-## Lexing & Tokens
+
+
+##### Lexing & Tokens
+
 Converts the string of a source file it into the tokens of our DSL. This is our "lexical grammer" – what arrangement of characters create allowable tokens. `cos`, `sin` and `tan`.
 
-## Parsing
+
+
+##### Parsing
+
 Ensure the tokens provided by the lexing conform to the grammar of our DSL. This is our "syntactic grammar" – what arrangement of tokens create allowable syntax.
 
-## Questions
+
+
+#### Questions
+
 We produce our grammar of expression types of which literal numbers can be expressions; negated numbers (unary operators) also; binary operators (+,-,* and /) also contribute as expressions.
 
 But these are not enough to construct a grammar in which operator precedence holds. Instead we need to extend the grammar which differs between these types of expressions in order to maintain correct precedence.
@@ -51,7 +63,9 @@ In reading the grammar from the list of tokens from the lexer we need a way to m
 
 Distinction between literals, lexemes and values.
 
-## On Statements and Expressions
+
+
+##### On Statements and Expressions
 
 Visually statements and expressions are very similar. The main difference between the two is while we use expressions to "compute" a value, statements are a way to enact change without returning a value. e.g. print statements or var declaration statements. There's even the obviously named, but somewhat confusing "expression statement":
 
@@ -67,7 +81,9 @@ For example, an expression as simple as `x = 5` becomes a statement expression w
 
 There is the **variable declaration** statement. This introduces a binding between an expression and an identifier. Then flip side of that is the **variable expression** statement - when an identifier is used as an expression, the name is looked-up and the bound value returned.
 
-## Compiling to JS
+
+
+#### Compiling to JS
 
 What's the best way? Because we ultimately want a funciton of the form
 
@@ -93,7 +109,9 @@ This then get's compiled to a real Javascript function outside of the Crest comp
 new Function("x", "return ${expression}")
 ```
 
-## State
+
+
+#### State
 
 App state (referring to the state within App.tsx) is currently a mish-mash of `Maps` and `Arrays`. Maps make it nice to update an existing expression which is indexed by a surrogate Id. However there's no way to use the keys and values in an expression to succinctly create UI elements (`<input>`, in our case). Using arrays as the basis for holding expressions makes it trivial to use as an expression for UI elements, but tedious to update which devolves to a linear search through the array for the element to update.
 
