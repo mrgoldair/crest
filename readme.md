@@ -1,15 +1,8 @@
 <p align="center" width="100%">
-	<img src="logo.svg" height="275px"/>
+	<img src="logo.svg" height="175px"/>
 </p>
-Crest is... a tiny DSL for expressing trig waves
 
-
-
-<img src="screener.png"/>
-
-
-
-
+<img style="" width=600 src="screener.png"/>
 
 ##### Build Notes / Todo / Ramblings
 
